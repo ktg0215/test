@@ -1,0 +1,20 @@
+{% extends "register/base.html" %}
+{% block content %}
+<!-- Large button groups (default and split) -->
+
+
+        <a href="{% url 'register:shop_list' 1 %}" >目黒</a>
+        <a href="{% url 'register:shop_list' 4 %}">上野広小路</a>
+        <a href="{% url 'register:shop_list' 3 %}">神保町</a>
+        <a href="{% url 'register:shop_list' 5 %}">北千住</a>
+    
+  
+  </div><br>
+   
+{% for user in user_list %}
+<tr>
+<td>{{user.shops.get_shop_display}}</td>
+<td>{{ user.last_name }}&nbsp;{{user.first_name}}</td><hr>
+</tr>
+{% endfor %}
+{% endblock %}

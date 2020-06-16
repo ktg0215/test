@@ -6,7 +6,6 @@ from .forms import BS4ScheduleForm, SimpleScheduleForm
 from .models import Schedule
 from . import mixins
 from .models import User
-from django_pandas.io import read_frame
 from register.models import Shops
 
 User = get_user_model()

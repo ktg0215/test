@@ -5,7 +5,6 @@ from django.dispatch import receiver
 import datetime
 from django.utils import timezone
 from django.conf import settings
-from django_pandas.managers import DataFrameManager
 from register.models import Shops
 
 SUB_START = (
@@ -37,7 +36,6 @@ class Schedule(models.Model):
     date = models.DateField('日付')
     shops = models.ForeignKey(Shops, verbose_name='店舗', on_delete=models.CASCADE,blank=True)
 
-    objects = DataFrameManager()
 
     def __int__(self):
         return self.date

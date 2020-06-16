@@ -15,14 +15,27 @@
         {{ month_formset.management_form }}{% for week_day_forms in month_day_forms %}
         <table class="table">{% for day, forms in week_day_forms.items %}
             
-                <tr> <td>{{ day | date:"n" }}月{{day |date:"j"}}日 <small>({{ day | date:"D" }})</small></td>
+                <tr> <td>{{ day | date:"n" }}月{{day |date:"j"}}日 
+                    {% if day|date:"D" == "日" %}
+                    <small>
+                        <span style="color: #F00;">({{ day | date:"D" }})</span>
+                    </small></td>
+                    {% elif day|date:"D" == "土" %}
+                    <small>
+                        <span style="color:#0000FF">({{ day | date:"D" }})</span>
+                    </small></td>
+                    {% else %}
+                    <small>
+                    ({{ day|date:"D" }})
+                </small></td>
+                   {% endif %}
                    {% for form in forms %}
                    
                     <td>{{form.date}}{{form.id}}start{{form.start_time}}end{{form.end_time}}
                     </td></tr>
-                    {% endfor %}
+                    {% endfor %}{% endfor %}
                 
-            {% endfor %}{% endfor %}
+            {% endfor %}
             </tbody>
         </table>
         {% csrf_token %}

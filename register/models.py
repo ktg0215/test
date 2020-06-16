@@ -104,7 +104,22 @@ class UserData(models.Model):
     start_day = models.DateField("入店日",blank=True,default=datetime(1999, 1, 1))
     user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
+    @property
+    def age(self):
+        if self.date_of_birth is None:
+            return None
+            today = date.today()
+            age = today.year - self.date_of_birth.year
+        if today < self.__yearbirthday(self.date_of_birth, today.year):
+            age -= 1
+            return age
 
+        def __yearbirthday(self, date_of_birth, year):
+            try:
+                return date_of_birth.replace(year=year)
+            except ValueError:
+                date_of_birth += timedelta(days=1)
+                return date_of_birth.replace(year=year)
 # @receiver(post_save, sender=User)
 # def create_user_profile(sender, instance, created, **kwargs):
 #     if created:

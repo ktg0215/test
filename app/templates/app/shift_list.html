@@ -26,10 +26,47 @@
 <table border="1">
     <th>User</th>
     {% for day in df %}
-    <th>{{day | date:"j" }}日<small>({{ day | date:"D" }})</small></th>
-    {% endfor %}
+    <th>{{day | date:"j" }}日 {% if day|date:"D" == "日" %}
+        <small>
+            <span style="color: #F00;">({{ day | date:"D" }})</span>
+        </small></td>
+        {% elif day|date:"D" == "土" %}
+        <small>
+            <span style="color:#0000FF">({{ day | date:"D" }})</span>
+        </small></td>
+        {% else %}
+        <small>
+        ({{ day|date:"D" }})
+    </small></td>
+       {% endif %} {% endfor %}
 
     {% for index,row in df.iterrows %}
+{% if index == "希望人数" %}
+
+<tr>    
+    <th bgcolor="#EEEEEE">{{index}}</th>
+    <td  bgcolor="#EEEEEE">{{row.0}}</td>
+    <td  bgcolor="#EEEEEE">{{row.1}}</td>
+    <td  bgcolor="#EEEEEE">{{row.2}}</td>
+    <td  bgcolor="#EEEEEE">{{row.3}}</td>
+    <td  bgcolor="#EEEEEE">{{row.4}}</td>
+    <td  bgcolor="#EEEEEE">{{row.5}}</td>
+    <td  bgcolor="#EEEEEE">{{row.6}}</td>
+    <td  bgcolor="#EEEEEE">{{row.7}}</td>
+    <td  bgcolor="#EEEEEE">{{row.8}}</td>
+    <td  bgcolor="#EEEEEE">{{row.9}}</td>
+    <td  bgcolor="#EEEEEE">{{row.10}}</td>
+    <td  bgcolor="#EEEEEE">{{row.11}}</td>
+    <td  bgcolor="#EEEEEE">{{row.12}}</td>
+    <td  bgcolor="#EEEEEE">{{row.13}}</td>
+    <td  bgcolor="#EEEEEE">{{row.14}}</td>
+    
+    {% if row.15 == True %}
+    <td  bgcolor="#EEEEEE">{{row.15}}</td>
+    {% else %}
+    {% endif %}
+</tr>
+{% else %}
 
 <tr>    
     <th>{{index}}</th>
@@ -54,8 +91,9 @@
     {% else %}
     {% endif %}
 </tr>
-
+{% endif %}
 {% endfor %}
+
 </table>
 
   

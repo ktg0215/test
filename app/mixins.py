@@ -274,6 +274,7 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
         queryset = self.model.objects.filter(**lookup)
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
+        df.loc["希望人数"]=0
 
         a=1
         for schedule in queryset:
@@ -309,9 +310,22 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
                 df[date]= df[date].astype(str)
                 df.at[user,date] =time
                 df.fillna(" ", inplace=True) 
-                
+               
         df.fillna(" ", inplace=True)
+        # 提出人数確認↓ーーーーーーーーーー
+        df_bool = (df == ' ')
+        df_bool.sum()
+        dfnum=[]
+        for m in df_bool.sum():
+            dfnum.append(m)
+        num=len(df)-1 #全体人数
+        df_num=[]
+        for a in dfnum:
+            b=num-a
+            df_num.append(b)
 
+        df.loc["希望人数"]=df_num
+        
         return df
 
     def get_week_calendar(self):
@@ -342,7 +356,7 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
         queryset = self.model.objects.filter(**lookup)
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
-        
+        df.loc["希望人数"]=0
         a=1
         for schedule in queryset:
             
@@ -380,6 +394,19 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
                     df.fillna(" ", inplace=True) 
                 
         df.fillna(" ", inplace=True)
+        # 提出人数確認↓ーーーーーーーーーー
+        df_bool = (df == ' ')
+        df_bool.sum()
+        dfnum=[]
+        for m in df_bool.sum():
+            dfnum.append(m)
+        num=len(df)-1 #全体人数
+        df_num=[]
+        for a in dfnum:
+            b=num-a
+            df_num.append(b)
+
+        df.loc["希望人数"]=df_num
 
         return df
 

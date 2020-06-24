@@ -103,7 +103,9 @@ class UserData(models.Model):
     date_of_birth = models.DateField("生年月日",blank=True,default=datetime(1999, 1, 1))
     start_day = models.DateField("入店日",blank=True,default=datetime(1999, 1, 1))
     user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-
+    def __str__(self):
+        return self.start_day,self.date_of_birth
+    
     @property
     def age(self):
         if self.date_of_birth is None:

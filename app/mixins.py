@@ -271,11 +271,12 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
             '{}__range'.format(self.date_field): (start, end),
            
         }
-        queryset = self.model.objects.filter(**lookup)
+        queryset = self.model.objects.filter(**lookup).order_by('user__userdata__start_day')
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
         df.loc["希望人数"]=0
-
+     
+        
         a=1
         for schedule in queryset:
             if a == 1:
@@ -284,7 +285,7 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
                 start_time=schedule.get_start_time_display()
                 end_time = schedule.get_end_time_display()
                 time = start_time+'-'+end_time
-                ddf =pd.DataFrame({date:time},index =[user])
+                ddf =pd.DataFrame({date:schedule},index =[user])
                 df = pd.concat([df,ddf],axis=0)
                 df.fillna(" ", inplace=True)
                 a = 2
@@ -295,7 +296,7 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
                 start_time=schedule.get_start_time_display()
                 end_time = schedule.get_end_time_display()
                 time = start_time+'-'+end_time
-                ddf =pd.DataFrame({date:time},index =[user])
+                ddf =pd.DataFrame({date:schedule},index =[user])
                 df = pd.concat([df,ddf],axis=0)
                 df.fillna(" ", inplace=True)
                 
@@ -308,7 +309,7 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
                 
                 ddf =pd.DataFrame({date:time},index =[user])
                 df[date]= df[date].astype(str)
-                df.at[user,date] =time
+                df.at[user,date] =schedule
                 df.fillna(" ", inplace=True) 
                
         df.fillna(" ", inplace=True)
@@ -325,7 +326,7 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
             df_num.append(b)
 
         df.loc["希望人数"]=df_num
-        
+        print(df)
         return df
 
     def get_week_calendar(self):

@@ -40,24 +40,11 @@ class Schedule(models.Model):
     def __int__(self):
         return self.date
 
-"""
-
-submissiontime = (
-    ('1', '14'),
-    ('2', '16'),
-    ('3', '17'),
-    ('4', '17.5'),
-    ('5', '18'),
-    ('6', '18.5'),
-    ('7', '19'),
-    ('8', '19.5'),
-    ('9', '20'),
-    ('10', '〇'),
-)
+class Shop_config(models.Model):
+    shops = models.OneToOneField(Shops,on_delete=models.CASCADE,)
+    date = models.DateField('日付')
+    need_pa = models.IntegerField(default=0)
+    base_pa = models.IntegerField(default=0)
+    
 
 
-class Profile(models.Model):
-    phone = models.CharField("生年月日", max_length=255, blank=True)
-    gender = models.CharField("所属店舗", choices=submissiontime, blank=True,)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-"""

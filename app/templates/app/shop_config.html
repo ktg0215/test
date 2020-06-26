@@ -1,0 +1,44 @@
+{% extends "register/base.html" %}
+{% block content %}
+ 
+
+    <div class = "common-form">
+    <form action="" method="POST">
+      <div class="form-group">
+      
+          <div id ="tata"><ul>
+          
+            <table>
+              <th width="15%"></th>
+              <th></th>
+              <h2>--{{ user.shops.get_shop_display }}店--&nbsp; 店舗設定</h2>
+              <th></th>
+              
+              <tr>
+                  <td >平日</td>
+                  <td>{{ form.base_pa_a }}</td>
+              </tr>
+              <tr>
+                <td><p>祝前</p></td>
+                <td >{{ form.base_pa_b }}</td>
+              </tr>             
+              <tr>
+                  <td >土日</td>
+                  <td>{{ form.base_pa_c }}</td>
+                  
+                  
+              </tr>
+              
+              {{ form.shops.as_hidden }}
+            </table>
+            {% csrf_token %}
+        </div>
+    
+      
+        <input type="submit" value="設定">
+    
+    </form>
+    </div>
+    {% endblock %}
+
+    

@@ -2,11 +2,12 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import generic
-from .forms import BS4ScheduleForm, SimpleScheduleForm
-from .models import Schedule
+from .forms import BS4ScheduleForm, SimpleScheduleForm, Shop_base_configForm, Shop_detail_configForm
+from .models import Schedule,Shop_config
 from . import mixins
 from .models import User
 from register.models import Shops
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -137,3 +138,32 @@ class MonthWithFormsCalendar(mixins.MonthWithFormsMixin, generic.View):
             return redirect('app:week_with_schedule', user_pk=user_pk)
 
         return render(request, self.template_name, context)
+
+class Shop_base_views(generic.CreateView):
+    model = Shop_config
+    template_name= 'app/shop_config.html'
+    form_class = Shop_base_configForm
+
+   
+
+    def get_success_url(self):
+        return reverse('shop_config_list', kwargs={'pk': self.object.pk})
+
+class Shop_baseupdate_views(generic.UpdateView):
+    model = Shop_config
+    template_name= 'app/shop_config.html'
+    form_class = Shop_base_configForm
+
+   
+
+    def get_success_url(self):
+        return reverse('shop_config_list', kwargs={'pk': self.object.pk})
+
+        
+class Shop_config_list(generic.ListView):
+    model=Shop_config
+    template_name = 'app/shop_config_list.html'
+
+# class Shop_detail_config(generic.CreateView):
+    
+

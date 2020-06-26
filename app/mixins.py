@@ -326,7 +326,7 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
             df_num.append(b)
 
         df.loc["希望人数"]=df_num
-        print(df)
+
         return df
 
     def get_week_calendar(self):

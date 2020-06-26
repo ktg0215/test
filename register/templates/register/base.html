@@ -6,6 +6,7 @@
   }
       
   </style>
+  
 <head>
     <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" /> -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -39,9 +40,9 @@
                 Dropdown link
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="{% url 'app:week_with_schedule' user.pk %}">Action</a>
-                <a class="dropdown-item" href="{% url 'app:mycalendar' user.pk %}">Another action</a>
-               
+                <a class="dropdown-item" href="{% url 'data:data_list' %}">Action</a>
+                <a class="dropdown-item" href="{% url 'data:upload' %}">csv_upload</a>
+                <a class="dropdown-item" href="{% url 'app:shop_config' user.shops.shop %}">ShopConfig</a>
                 <a class="dropdown-item" href="#">Something else here</a>
               </div></li>
               </ul>

@@ -1,17 +1,17 @@
 {% extends "register/base.html" %}
 {% block content %}
  
-
+    
     <div class = "common-form">
     <form action="" method="POST">
       <div class="form-group">
       
-          <div id ="tata"><ul>
+          
           
             <table>
               <th width="15%"></th>
               <th></th>
-              <h2>--{{ user.shops.get_shop_display }}店--&nbsp; 店舗設定</h2>
+              <h2>{{ user.shops.get_shop_display }}店&nbsp; 店舗設定</h2>
               <th></th>
               
               <tr>
@@ -35,10 +35,8 @@
         </div>
     
       
-        <input type="submit" value="設定">
+        <button  type="submit" class = "submit" class="btn btn-primary btn-lg">設定</button>
     
     </form>
     </div>
     {% endblock %}
-
-    

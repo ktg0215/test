@@ -143,21 +143,20 @@ class Shop_base_views(generic.CreateView):
     model = Shop_config
     template_name= 'app/shop_config.html'
     form_class = Shop_base_configForm
-
-   
-
-    def get_success_url(self):
-        return reverse('shop_config_list', kwargs={'pk': self.object.pk})
-
+    success_url = "shift/shift_list"
+    def get_initial(self):
+        initial = super().get_initial()
+        initial["shops"] = self.request.user.shops
+        return initial
+ 
 class Shop_baseupdate_views(generic.UpdateView):
     model = Shop_config
     template_name= 'app/shop_config.html'
     form_class = Shop_base_configForm
+    
+    success_url = '/'
+ 
 
-   
-
-    def get_success_url(self):
-        return reverse('shop_config_list', kwargs={'pk': self.object.pk})
 
         
 class Shop_config_list(generic.ListView):

@@ -41,7 +41,7 @@ class Schedule(models.Model):
         return self.date
 
 class Shop_config(models.Model):
-    shops = models.OneToOneField(Shops,on_delete=models.CASCADE,default=Shops.shop)
+    shops = models.OneToOneField(Shops,on_delete=models.CASCADE)
     date = models.DateField('日付',default=datetime.date.today)
     need_pa = models.IntegerField(default=0)
     base_pa_a = models.IntegerField('平日',default=0)

@@ -5,9 +5,9 @@
 
         <a href="{% url 'register:user_list' %}" >全店</a>
         <a href="{% url 'register:shop_list' 1 %}" >目黒</a>
-        <a href="{% url 'register:shop_list' 5 %}">上野広小路</a>
-        <a href="{% url 'register:shop_list' 4 %}">神保町</a>
-        <a href="{% url 'register:shop_list' 6 %}">北千住</a><br>
+        <a href="{% url 'register:shop_list' 2 %}">上野広小路</a>
+        <a href="{% url 'register:shop_list' 5 %}">神保町</a>
+        <a href="{% url 'register:shop_list' 9 %}">北千住</a><br>
     
 
   
@@ -18,7 +18,7 @@
 
 
 {% for user in user_list %}
-<td>店番号{{ user.shops.shop }}個人ID{{ user.id }}{{user.shops.get_shop_display}}店</td>
+<td>店番号{{ user.shops }}個人ID{{ user.id }}{{user.shops.get_shop_display}}店</td>
 <td>{{ user.last_name }}&nbsp;{{user.first_name}}</td>
 <td>誕生日:{{user.userdata.date_of_birth}}[{{user.userdata.date_of_birth|age}}]  </td>
 <td>入店日:{{user.userdata.start_day }}  </td><hr>

@@ -42,7 +42,8 @@
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                 <a class="dropdown-item" href="{% url 'data:data_list' %}">Action</a>
                 <a class="dropdown-item" href="{% url 'data:upload' %}">csv_upload</a>
-                <a class="dropdown-item" href="{% url 'app:shop_config' user.shops.shop %}">ShopConfig</a>
+                <a class="dropdown-item" href="{% url 'app:shop_config' user.shops.shop %}">Config</a>
+                <a class="dropdown-item" href="{% url 'app:shop_config' user.shops.shop %}">Config更新</a>
                 <a class="dropdown-item" href="{% url 'app:day_config' user.shops.shop %}">Day Config</a>
 
                 <a class="dropdown-item" href="#">Something else here</a>

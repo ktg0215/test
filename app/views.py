@@ -152,23 +152,6 @@ class Shop_base_views(generic.CreateView):
         initial = super().get_initial()
         initial["shops"] = self.request.user.shops
         return initial
-    
-    def post(self, request, **kwargs):
-        form = self.form_class(request.POST)
-        shops = self.request.user.shops
-        print(78456)
-        if form.is_valid():
-            instances = form.save(commit=False)
-
-            for shop_config in instances:
-                print(shop_config)
-                shops.shop_config = shop_config
-                shop_config.shops = shops
-                shop_config.save()
-                shops.save()
-            return redirect('app:shift_list')
-
-        return redirect('app:shift_list')
 
 
  
@@ -198,15 +181,12 @@ class Shop_config_day_views(mixins.Day_configMixin, generic.View):
         context = self.get_month_calendar()
         shop_pk = self.kwargs['shop_pk']
         shops = get_object_or_404(Shops, pk=shop_pk)
+        shops=User.objects.filter(shops__shop=shops)
         context['shops'] = shops
-        print(shops)
         formset = context['month_formset']
         if formset.is_valid():
-            print(78456)
             instances = formset.save(commit=False)
-            print(instances)
             for shop_config_day in instances:
-                print(shop_config_day)
                 shops.shop_config_day = shop_config_day
                 shop_config_day.shops = shops
                 shop_config_day.save()

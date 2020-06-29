@@ -16,9 +16,9 @@ urlpatterns = [
         name='week_with_schedule'
     ),
     path('shop_config/',views.Shop_base_views.as_view(),name='shop_config'),
-    path('shop_config/<int:pk>/',views.Shop_base_views.as_view(),name='shop_config'),
+    path('shop_config/<int:shops_pk>/',views.Shop_base_views.as_view(),name='shop_config'),
     # path('shop_config/',views.Shop_baseupdate_views.as_view(),name='shop_config'),
-    path('shop_config/<int:pk>/',views.Shop_baseupdate_views.as_view(),name='shop_config'),
+    # path('shop_config/<int:pk>/',views.Shop_baseupdate_views.as_view(),name='shop_config'),
 
     # path('shop_config/<int:pk>/',views.Shop_config_list.as_view(),name='shop_config_list'),
     path(

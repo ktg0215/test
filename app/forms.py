@@ -1,5 +1,5 @@
 from django import forms
-from .models import Schedule,Shop_config
+from .models import Schedule,Shop_config,Shop_config_day
 
 
 class BS4ScheduleForm(forms.ModelForm):
@@ -46,12 +46,12 @@ class Shop_base_configForm(forms.ModelForm):
     class Meta:
         model = Shop_config
         fields=('shops','base_pa_a','base_pa_b','base_pa_c',)
-        wifgets={'date':forms.HiddenInput,
+        wifgets={
                 'shops':forms.HiddenInput,}
 
-class Shop_detail_configForm(forms.ModelForm):
+class Shop_config_dayForm(forms.ModelForm):
     class Meta:
-        model = Shop_config
-        fields=('need_pa',)
-        wifgets={'date':forms.HiddenInput,
+        model = Shop_config_day
+        fields=('day_need','date')
+        wifgets={'date': forms.HiddenInput,
                 'shops':forms.HiddenInput,}

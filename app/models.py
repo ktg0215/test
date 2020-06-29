@@ -42,10 +42,14 @@ class Schedule(models.Model):
 
 class Shop_config(models.Model):
     shops = models.OneToOneField(Shops,on_delete=models.CASCADE)
-    date = models.DateField('日付',default=datetime.date.today)
-    need_pa = models.IntegerField(default=0)
     base_pa_a = models.IntegerField('平日',default=0)
     base_pa_b = models.IntegerField('祝前',default=0)
     base_pa_c = models.IntegerField('土日',default=0)
+
+class Shop_config_day(models.Model):
+    shops = models.ForeignKey(Shops, verbose_name='店舗', on_delete=models.CASCADE,blank=True)
+    day_need = models.IntegerField('必要人数',default=0)
+    date = models.DateField('日付')
+
 
 

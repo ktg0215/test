@@ -2,8 +2,8 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import generic
-from .forms import BS4ScheduleForm, SimpleScheduleForm, Shop_base_configForm, Shop_detail_configForm
-from .models import Schedule,Shop_config
+from .forms import BS4ScheduleForm, SimpleScheduleForm, Shop_base_configForm, Shop_config_dayForm
+from .models import Schedule,Shop_config,Shop_config_day
 from . import mixins
 from .models import User
 from register.models import Shops
@@ -34,10 +34,15 @@ class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
         context = super().get_context_data(**kwargs)
         shop = get_object_or_404(Shops, pk=self.kwargs['shops_pk'])
         context['shops']= User.objects.filter(shops__shop=shop)
+        context['shopnum']=self.kwargs['shops_pk']
+        context['config']= Shop_config_day.objects.filter(shops=shop)
+        context['base_config']= Shop_config.objects.filter(shops=shop)
+        base_config= Shop_config.objects.filter(shops=shop)
 
+        print(base_config)
         calendar_context = self.get_week_calendar()
         context.update(calendar_context)
-        return context        
+        return context       
 
 class WeekWithScheduleCalendar(mixins.WeekWithScheduleMixin, generic.TemplateView):
     """スケジュール付きの週間カレンダーを表示するビュー"""
@@ -131,7 +136,6 @@ class MonthWithFormsCalendar(mixins.MonthWithFormsMixin, generic.View):
                 user.schedule = schedule
                 shops.schedule = schedule
                 schedule.shops = user.shops
-                print(schedule.shops)
                 schedule.save()
                 shops.save()
                 user.save()
@@ -148,6 +152,25 @@ class Shop_base_views(generic.CreateView):
         initial = super().get_initial()
         initial["shops"] = self.request.user.shops
         return initial
+    
+    def post(self, request, **kwargs):
+        form = self.form_class(request.POST)
+        shops = self.request.user.shops
+        print(78456)
+        if form.is_valid():
+            instances = form.save(commit=False)
+
+            for shop_config in instances:
+                print(shop_config)
+                shops.shop_config = shop_config
+                shop_config.shops = shops
+                shop_config.save()
+                shops.save()
+            return redirect('app:shift_list')
+
+        return redirect('app:shift_list')
+
+
  
 class Shop_baseupdate_views(generic.UpdateView):
     model = Shop_config
@@ -156,13 +179,41 @@ class Shop_baseupdate_views(generic.UpdateView):
     
     success_url = '/'
  
+class Shop_config_day_views(mixins.Day_configMixin, generic.View):
+    model = Shop_config_day
+    template_name = 'app/day_config.html'
+    date_field = 'date'
+    form_class= Shop_config_dayForm
 
+    def get(self, request, **kwargs):
 
-        
-class Shop_config_list(generic.ListView):
-    model=Shop_config
-    template_name = 'app/shop_config_list.html'
+        context = self.get_month_calendar()
+        context['shop'] = get_object_or_404(User, pk=self.kwargs['shop_pk'])
 
-# class Shop_detail_config(generic.CreateView):
+        return render(request, self.template_name, context)
     
+
+    def post(self, request, **kwargs):
+
+        context = self.get_month_calendar()
+        shop_pk = self.kwargs['shop_pk']
+        shops = get_object_or_404(Shops, pk=shop_pk)
+        context['shops'] = shops
+        print(shops)
+        formset = context['month_formset']
+        if formset.is_valid():
+            print(78456)
+            instances = formset.save(commit=False)
+            print(instances)
+            for shop_config_day in instances:
+                print(shop_config_day)
+                shops.shop_config_day = shop_config_day
+                shop_config_day.shops = shops
+                shop_config_day.save()
+                shops.save()
+            return redirect('app:shift_list')
+
+        return render(request, self.template_name, context)
+
+
 

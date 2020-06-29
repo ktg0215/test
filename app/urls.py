@@ -41,4 +41,13 @@ urlpatterns = [
         'user/<int:user_pk>/month_with_forms/<int:year>/<int:month>/<int:day>/',
         views.MonthWithFormsCalendar.as_view(), name='month_with_forms'
     ),
+        path(
+        'day_config/<int:shop_pk>/',
+        views.Shop_config_day_views.as_view(), name='day_config'
+    ),
+    path(
+        'day_config/<int:shop_pk>/<int:year>/<int:month>/<int:day>/',
+        views.Shop_config_day_views.as_view(), name='day_config'
+    ),
+
 ]

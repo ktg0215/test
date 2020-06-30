@@ -171,7 +171,7 @@ class Shop_config_day_views(mixins.Day_configMixin, generic.View):
     def get(self, request, **kwargs):
 
         context = self.get_month_calendar()
-        context['shop'] = get_object_or_404(User, pk=self.kwargs['shop_pk'])
+        context['shop'] = get_object_or_404(Shops, pk=self.kwargs['shop_pk'])
 
         return render(request, self.template_name, context)
     
@@ -179,9 +179,10 @@ class Shop_config_day_views(mixins.Day_configMixin, generic.View):
     def post(self, request, **kwargs):
 
         context = self.get_month_calendar()
-        shop_pk = self.kwargs['shop_pk']
-        shops = get_object_or_404(Shops, pk=shop_pk)
-        shops=User.objects.filter(shops__shop=shops)
+        shops = self.kwargs['shop_pk']
+        # shops = get_object_or_404(Shops, pk=shop_pk)
+        shops=Shops.objects.filter(shop=shops)
+        print(shops)
         context['shops'] = shops
         formset = context['month_formset']
         if formset.is_valid():

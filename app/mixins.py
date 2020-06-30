@@ -342,9 +342,9 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
 
     def get_week_schedules(self, start, end, days):
         
-        shop = get_object_or_404(Shops, pk=self.kwargs['shops_pk'])
+        shop = self.kwargs['shops_pk']
         user= User.objects.filter(shops__shop=shop)
-        print(user)
+    
         b =[]
         for a in user:
             b.append(a)
@@ -401,7 +401,7 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
         dfnum=[]
         for m in df_bool.sum():
             dfnum.append(m)
-        num=len(df)-1 #全体人数
+        num=len(df)-2 #全体人数
         df_num=[]
         for a in dfnum:
             b=num-a
@@ -409,12 +409,15 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
 
         df.loc["希望人数"]=df_num
         # 必要人数---------------↓
-        config= Shop_config_day.objects.filter(shops__shop=shop)
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
-            
+            'shops__pk': self.kwargs.get('shop_pk'),
         }
         queryset = Shop_config_day.objects.filter(**lookup)
+        need =[]
+        for need_pa in queryset:
+            need.append(need_pa)
+        df.loc["必要人数"]=need    
         return df
 
     def get_week_calendar(self):
@@ -550,7 +553,7 @@ class Day_configMixin(MonthCalendarMixin):
     """スケジュール付きの、月間カレンダーを提供するMixin"""
 
     def get_month_forms(self, start, end, days):
-        """それぞれの日と紐づくフォームを作成する"""
+
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
             'shops__pk': self.kwargs.get('shop_pk'),

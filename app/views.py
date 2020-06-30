@@ -180,9 +180,14 @@ class Shop_config_day_views(mixins.Day_configMixin, generic.View):
 
         context = self.get_month_calendar()
         shops = self.kwargs['shop_pk']
-        # shops = get_object_or_404(Shops, pk=shop_pk)
-        shops=Shops.objects.filter(shop=shops)
-        print(shops)
+        # shops = get_object_or_404(Shops, pk=shops)
+        shop=Shops.objects.filter(shop=shops)
+        shopss=[]
+        shopss.append(shop[0])
+        shops =shopss[0]
+
+        print(shops,4444444444444)
+
         context['shops'] = shops
         formset = context['month_formset']
         if formset.is_valid():

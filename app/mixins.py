@@ -414,6 +414,7 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
             'shops__pk': self.kwargs.get('shop_pk'),
         }
         queryset = Shop_config_day.objects.filter(**lookup)
+        print(queryset)
         need =[]
         for need_pa in queryset:
             need.append(need_pa)

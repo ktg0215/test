@@ -416,9 +416,17 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
         queryset = Shop_config_day.objects.filter(**lookup)
         print(queryset)
         need =[]
-        for need_pa in queryset:
-            need.append(need_pa)
-        df.loc["必要人数"]=need    
+        for shop_config_day in queryset:
+            print(shop,5555555555555)
+
+            print(shop_config_day.shops)
+            if shop_config_day.shops == shop:
+                date = shop_config_day.date
+                
+                print(date,111)
+
+            else:
+                pass
         return df
 
     def get_week_calendar(self):

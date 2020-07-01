@@ -8,7 +8,7 @@ from django.conf import settings
 from register.models import Shops
 
 SUB_START = (
-    ('0', '✕'),
+    
     ('1', '14'),
     ('2', '16'),
     ('3', '17'),
@@ -21,7 +21,7 @@ SUB_START = (
     ('10', '〇'),
 )
 SUB_END = (
-    ('0', '✕'),
+    
     ('1', '22'),
     ('2', '23'),
     ('3', '〇'),

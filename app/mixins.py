@@ -7,7 +7,7 @@ from django_pandas.io import read_frame
 from register.models import User,Shops
 import pandas as pd
 import numpy as np
-from .models import Schedule,Shop_config_day
+from .models import Schedule,Shop_config_day,Shop_config
 from django.shortcuts import redirect, render, get_object_or_404
 
 
@@ -282,20 +282,20 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
             if a == 1:
                 user=schedule.user.last_name+' '+schedule.user.first_name
                 date= schedule.date
-                start_time=schedule.get_start_time_display()
-                end_time = schedule.get_end_time_display()
-                time = start_time+'-'+end_time
+                # start_time=schedule.get_start_time_display()
+                # end_time = schedule.get_end_time_display()
+                # time = start_time+'-'+end_time
                 ddf =pd.DataFrame({date:schedule},index =[user])
                 df = pd.concat([df,ddf],axis=0)
                 df.fillna(" ", inplace=True)
                 a = 2
                 
-            if user != schedule.user.last_name+' '+schedule.user.first_name: 
+            elif user != schedule.user.last_name+' '+schedule.user.first_name: 
                 user=schedule.user.last_name+' '+schedule.user.first_name
                 date= schedule.date
-                start_time=schedule.get_start_time_display()
-                end_time = schedule.get_end_time_display()
-                time = start_time+'-'+end_time
+                # start_time=schedule.get_start_time_display()
+                # end_time = schedule.get_end_time_display()
+                # time = start_time+'-'+end_time
                 ddf =pd.DataFrame({date:schedule},index =[user])
                 df = pd.concat([df,ddf],axis=0)
                 df.fillna(" ", inplace=True)
@@ -303,11 +303,11 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
             else:    
                 user=schedule.user.last_name+' '+schedule.user.first_name
                 date= schedule.date
-                start_time=schedule.get_start_time_display()
-                end_time = schedule.get_end_time_display()
-                time = start_time+'-'+end_time
+                # start_time=schedule.get_start_time_display()
+                # end_time = schedule.get_end_time_display()
+                # time = start_time+'-'+end_time
                 
-                ddf =pd.DataFrame({date:time},index =[user])
+                # ddf =pd.DataFrame({date:time},index =[user])
                 df[date]= df[date].astype(str)
                 df.at[user,date] =schedule
                 df.fillna(" ", inplace=True) 
@@ -344,6 +344,7 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
         
         shop = self.kwargs['shops_pk']
         user= User.objects.filter(shops__shop=shop)
+        q =Shop_config.objects.filter(shops__shop=shop)
     
         b =[]
         for a in user:
@@ -364,20 +365,14 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
                 if a == 1:
                     user=schedule.user.last_name+' '+schedule.user.first_name
                     date= schedule.date
-                    start_time=schedule.get_start_time_display()
-                    end_time = schedule.get_end_time_display()
-                    time = start_time+'-'+end_time
                     ddf =pd.DataFrame({date:schedule},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
                     a = 2
                     
-                if user != schedule.user.last_name+' '+schedule.user.first_name: 
+                elif user != schedule.user.last_name+' '+schedule.user.first_name: 
                     user=schedule.user.last_name+' '+schedule.user.first_name
                     date= schedule.date
-                    start_time=schedule.get_start_time_display()
-                    end_time = schedule.get_end_time_display()
-                    time = start_time+'-'+end_time
                     ddf =pd.DataFrame({date:schedule},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
@@ -385,14 +380,12 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
                 else:    
                     user=schedule.user.last_name+' '+schedule.user.first_name
                     date= schedule.date
-                    start_time=schedule.get_start_time_display()
-                    end_time = schedule.get_end_time_display()
-                    time = start_time+'-'+end_time
-                    
-                    ddf =pd.DataFrame({date:time},index =[user])
                     df[date]= df[date].astype(str)
                     df.at[user,date] =schedule
                     df.fillna(" ", inplace=True) 
+            else:
+                pass
+                   
                
         df.fillna(" ", inplace=True)
         # 提出人数確認↓ーーーーーーーーーー
@@ -410,19 +403,21 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
         df.loc["希望人数"]=df_num
         # 必要人数---------------↓
         days = {day: [] for day in days} 
+        need_dff = pd.DataFrame(days)
         shop=Shops.objects.filter(shop=shop)
 
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
         }
         queryset = Shop_config_day.objects.filter(**lookup)
+
         for shop_config_day in queryset:
             if shop[0] == shop_config_day.shops:
                 date = shop_config_day.date
+                print(date.strftime('%a'))
                 need = shop_config_day.day_need
-                need_df =pd.DataFrame({date:need},index =["必要人数"])
-                print(date,111)
-
+                df.at["必要人数",date] =need
+                df.fillna(" ", inplace=True)
             else:
                 pass
         return df

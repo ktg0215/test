@@ -35,11 +35,7 @@ class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
         shop = get_object_or_404(Shops, pk=self.kwargs['shops_pk'])
         context['shops']= User.objects.filter(shops__shop=shop)
         context['shopnum']=self.kwargs['shops_pk']
-        context['config']= Shop_config_day.objects.filter(shops=shop)
-        context['base_config']= Shop_config.objects.filter(shops=shop)
-        base_config= Shop_config.objects.filter(shops=shop)
 
-        print(base_config)
         calendar_context = self.get_week_calendar()
         context.update(calendar_context)
         return context       

@@ -186,7 +186,6 @@ class Shop_config_day_views(mixins.Day_configMixin, generic.View):
         shopss.append(shop[0])
         shops =shopss[0]
 
-        print(shops,4444444444444)
 
         context['shops'] = shops
         formset = context['month_formset']

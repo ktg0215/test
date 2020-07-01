@@ -409,20 +409,18 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
 
         df.loc["希望人数"]=df_num
         # 必要人数---------------↓
+        days = {day: [] for day in days} 
+        shop=Shops.objects.filter(shop=shop)
+
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
-            'shops__pk': self.kwargs.get('shop_pk'),
         }
         queryset = Shop_config_day.objects.filter(**lookup)
-        print(queryset)
-        need =[]
         for shop_config_day in queryset:
-            print(shop,5555555555555)
-
-            print(shop_config_day.shops)
-            if shop_config_day.shops == shop:
+            if shop[0] == shop_config_day.shops:
                 date = shop_config_day.date
-                
+                need = shop_config_day.day_need
+                need_df =pd.DataFrame({date:need},index =["必要人数"])
                 print(date,111)
 
             else:

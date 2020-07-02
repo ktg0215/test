@@ -356,8 +356,10 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
         queryset = self.model.objects.filter(**lookup)
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
-        df.loc["希望人数"]=0
+        # df.loc["希望人数"]=0
         df.loc["必要人数"]=0
+        df.loc["過不足"]=0
+
 
         a=1
         for schedule in queryset:
@@ -394,32 +396,50 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
         dfnum=[]
         for m in df_bool.sum():
             dfnum.append(m)
-        num=len(df)-2 #全体人数
+        num=len(df)-2 #全体
         df_num=[]
         for a in dfnum:
             b=num-a
             df_num.append(b)
 
-        df.loc["希望人数"]=df_num
+        # df.loc["希望人数"]=df_num
         # 必要人数---------------↓
-        days = {day: [] for day in days} 
-        need_dff = pd.DataFrame(days)
         shop=Shops.objects.filter(shop=shop)
 
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
         }
         queryset = Shop_config_day.objects.filter(**lookup)
-
         for shop_config_day in queryset:
             if shop[0] == shop_config_day.shops:
                 date = shop_config_day.date
-                print(date.strftime('%a'))
                 need = shop_config_day.day_need
-                df.at["必要人数",date] =need
+                df.at["必要人数",date] =int(need)
                 df.fillna(" ", inplace=True)
             else:
                 pass
+        s=df.loc["必要人数"]  
+        p=[]   
+        for need in s:
+            p.append(need)
+        print(p)    
+        o=[]
+        for s,hope_pa in zip(p,df_num):
+            f=hope_pa-s
+            o.append(f)
+        df.loc["過不足"]=o 
+                  
+        # for shop_config_day,hope_pa in zip(queryset,df_num):
+        #     # print(shop_config_day.day_need)
+        #     if shop[0] == shop_config_day.shops:
+        #         date = shop_config_day.date
+        #         need = shop_config_day.day_need
+        #         hope = hope_pa -need
+        #         # print(hope_pa,need,"あ",hope,date)
+        #         df.at["過不足",date] =hope
+        #         df.fillna(" ", inplace=True)
+        #     else:
+        #         pass        
         return df
 
     def get_week_calendar(self):

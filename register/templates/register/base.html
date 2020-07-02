@@ -30,10 +30,10 @@
               <a class="nav-link" href="{% url 'register:user_list'%}">UserList</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'app:month_with_forms' user.pk  %}">Shift</a>
+              <a class="nav-link" href="{% url 'shift:month_with_forms' user.pk  %}">Shift</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'app:shift_list' %}">Shift確認</a>
+              <a class="nav-link" href="{% url 'shift:shift_list' %}">Shift確認</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -42,9 +42,9 @@
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                 <a class="dropdown-item" href="{% url 'data:data_list' %}">Action</a>
                 <a class="dropdown-item" href="{% url 'data:upload' %}">csv_upload</a>
-                <a class="dropdown-item" href="{% url 'app:shop_config' user.shops.shop %}">Config</a>
-                <a class="dropdown-item" href="{% url 'app:shop_config' user.shops.shop %}">Config更新</a>
-                <a class="dropdown-item" href="{% url 'app:day_config' user.shops.shop %}">Day Config</a>
+                <a class="dropdown-item" href="{% url 'shift:shop_config' user.shops.shop %}">Config</a>
+                <a class="dropdown-item" href="{% url 'shift:shop_config' user.shops.shop %}">Config更新</a>
+                <a class="dropdown-item" href="{% url 'shift:day_config' user.shops.shop %}">Day Config</a>
 
                 <a class="dropdown-item" href="#">Something else here</a>
               </div></li>
@@ -67,7 +67,7 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'app:month_with_forms' user.pk  %}">Shift</a>
+          <a class="nav-link" href="{% url 'shift:month_with_forms' user.pk  %}">Shift</a>
         </li>
 
         

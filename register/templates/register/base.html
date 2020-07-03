@@ -1,0 +1,89 @@
+{% load static %}
+
+<style>
+  .mgr-10{
+      margin-right : 100px;
+  }
+      
+  </style>
+  
+<head>
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" /> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<head>
+  {% if user.is_superuser %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">TOP</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+           
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'register:top' %}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register:user_list'%}">UserList</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'shift:month_with_forms' user.pk  %}">提出</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'shift:shift_list' %}">確認</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'shift:day_config' user.shops.shop %}">設定</a>
+            </li>            
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dropdown link
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="{% url 'data:data_list' %}">Action</a>
+                <a class="dropdown-item" href="{% url 'data:upload' %}">csv_upload</a>
+               
+                <a class="dropdown-item" href="{% url 'shift:day_config' user.shops.shop %}">Day Config</a>
+
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div></li>
+              </ul>
+          
+        </div>
+      </nav><hr>
+      <div class="mgr-10"><small>ログインユーザー：{{user.shops.get_shop_display}}店&nbsp;:&nbsp;{{ user.last_name }}&nbsp;{{user.first_name}}</small><hr></div>
+  {% else %}    
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">TOP</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+       
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'register:top' %}">Home <span class="sr-only">(current)</span></a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'shift:month_with_forms' user.pk  %}">Shift</a>
+        </li>
+
+        
+          </div></li>
+          </ul>
+      
+    </div>
+  </nav><hr>
+  <div class="mgr-10"><small>ログインユーザー：{{user.shops.get_shop_display}}店&nbsp;:&nbsp;{{ user.last_name }}&nbsp;{{user.first_name}}</small><hr></div>
+
+      {% endif %}
+        {% block content %}{% endblock %}</div>
+    </div>
+
+    
+
+</html>

@@ -98,7 +98,7 @@ class Shops(models.Model):
     shop = models.CharField("店舗", max_length=3,choices=SHOP_CHOICES, blank=True,default=1)
     user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,)
     
-    def __str__(self):
+    def __int__(self):
         return self.shop
 
 class UserData(models.Model):

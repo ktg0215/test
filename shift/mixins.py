@@ -13,7 +13,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 
 class BaseCalendarMixin:
     """カレンダー関連Mixinの、基底クラス"""
-    first_weekday = 0  # 0は月曜から、1は火曜から。6なら日曜日からになります。お望みなら、継承したビューで指定してください。
+    first_weekday = 4  # 0は月曜から、1は火曜から。6なら日曜日からになります。お望みなら、継承したビューで指定してください。
     week_names = ['月', '火', '水', '木', '金', '土', '日']  # これは、月曜日から書くことを想定します。['Mon', 'Tue'...
 
     def setup_calendar(self):
@@ -30,137 +30,9 @@ class BaseCalendarMixin:
         week_names.rotate(-self.first_weekday)  # リスト内の要素を右に1つずつ移動...なんてときは、dequeを使うと中々面白いです
         return week_names
 
-
-class MonthCalendarMixin(BaseCalendarMixin):
-    """月間カレンダーの機能を提供するMixin"""
-
-    def get_previous_week(self, date):
-        """前月を返す"""
-        if date.month == 1 and date.day ==16:
-            return date.replace(year=date.year-1, month=12,day=16)
-        if date.month == 1 and date.day ==1:
-            return date.replace(year=date.year-1, month=12,day=1)
-
-        if date.day == 16:
-            return date.replace(month =date.month -1 ,day = 16)
-        if date.day == 1:
-            return date.replace(month =date.month -1 ,day = 1)
-
-    def get_week_days(self):
-        """その週の日を全て返す"""
-        month = self.kwargs.get('month')
-        year = self.kwargs.get('year')
-        day = self.kwargs.get('day')
-        if month and year and day:
-            date = datetime.date(year=int(year), month=int(month), day=int(day))
-
-            if date.month ==12 and date.day >10:
-                month = 1
-                year = date.year +1
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(1))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
-                return dtlist
-            if date.month ==1  and  date.day ==1:
-                month =12
-                year = date.year-1
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(15))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-                return dtlist
-
-            if date.month != 12 and date.day < 21 and date.day > 4:
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month+1),day = int(1))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
-                return dtlist
-            if date.day < 6:
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(15))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-                return dtlist
-            if date.day > 20:
-                month =month-1
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(15))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-                return dtlist
-
-        else:
-            date = datetime.date.today()
-            year =int(date.year)
-            month=int(date.month)
-            day=int(date.day)
-            if date.day < 21 and date.day > 5:
-                date = datetime.date(year = int(year),month=int(month+1),day = int(1))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
-                return dtlist
-            if date.day < 6:
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(15))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-                return dtlist
-            if date.day > 20:
-                month = month + 1
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(15))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-                return dtlist
-            if date.month ==12 and date.day < 21 and date.day > 5:
-                month = 1
-                year = date.year +1
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(1))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
-                return dtlist
-
-
-    def name(self):
-        weekname=['月','火','水','木','金','土','日']
-        name=[]
-        week=[]
-        day = self.get_week_days()
-        for l in day:
-            name.append(l.weekday())
-        for nn in name:
-            week.append(weekname[nn])
-        return week
-
-
-
-    def get_month_calendar(self):
-        """月間カレンダー情報の入った辞書を返す"""
-        self.setup_calendar()
-        days = self.get_week_days()
-        first = days[0]
-        last = days[-1]
-        ago = self.get_previous_week(first)
-        calendar_data = {
-            'now': datetime.date.today(),
-            'month_days': days,
-
-            'month_previous': ago,
-            'month_next': first,
-            'week_names': self.name(),
-        }
-        return calendar_data
-
-
-class WeekCalendarMixin(BaseCalendarMixin):
+class PizzaMixin(BaseCalendarMixin):
     """週間カレンダーの機能を提供するMixin"""
 
-    def get_previous_week(self, date):
-        """前月を返す"""
-        if date.month == 1 and date.day ==16:
-            return date.replace(year=date.year-1, month=12,day=16)
-        if date.month == 1 and date.day ==1:
-            return date.replace(year=date.year-1, month=12,day=1)
-
-        if date.day == 16:
-            return date.replace(month =date.month -1 ,day = 16)
-        if date.day == 1:
-            return date.replace(month =date.month -1 ,day = 1)
-
     def get_week_days(self):
         """その週の日を全て返す"""
         month = self.kwargs.get('month')
@@ -168,79 +40,12 @@ class WeekCalendarMixin(BaseCalendarMixin):
         day = self.kwargs.get('day')
         if month and year and day:
             date = datetime.date(year=int(year), month=int(month), day=int(day))
-
-            if date.month ==12 and date.day >10:
-                month = 1
-                year = date.year +1
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(1))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
-                return dtlist
-            if date.month ==1  and  date.day ==1:
-                month =12
-                year = date.year-1
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(15))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-                return dtlist
-
-            if date.month != 12 and date.day < 21 and date.day > 4:
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month+1),day = int(1))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
-                return dtlist
-            if date.day < 6:
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(15))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-                return dtlist
-            if date.day > 20:
-                month =month-1
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(15))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-                return dtlist
-
         else:
             date = datetime.date.today()
-            year =int(date.year)
-            month=int(date.month)
-            day=int(date.day)
-            if date.day < 21 and date.day > 5:
-                date = datetime.date(year = int(year),month=int(month+1),day = int(1))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
-                return dtlist
-            if date.day < 6:
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(15))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-                return dtlist
-            if date.day > 20:
-                month = month + 1
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(15))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-                return dtlist
-            if date.month ==12 and date.day < 21 and date.day > 5:
-                month = 1
-                year = date.year +1
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day = int(1))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
-                return dtlist
 
-
-    def name(self):
-        weekname=['月','火','水','木','金','土','日']
-        name=[]
-        week=[]
-        day = self.get_week_days()
-        for l in day:
-            name.append(l.weekday())
-        for nn in name:
-            week.append(weekname[nn])
-        return week
-
+        for week in self._calendar.monthdatescalendar(date.year, date.month):
+            if date in week:  # 週ごとに取り出され、中身は全てdatetime.date型。該当の日が含まれていれば、それが今回表示すべき週です
+                return week
 
     def get_week_calendar(self):
         """週間カレンダー情報の入った辞書を返す"""
@@ -248,20 +53,17 @@ class WeekCalendarMixin(BaseCalendarMixin):
         days = self.get_week_days()
         first = days[0]
         last = days[-1]
-        ago = self.get_previous_week(first)
         calendar_data = {
             'now': datetime.date.today(),
             'week_days': days,
-            'week_previous': ago,
-            'week_next': first ,
-            'week_names': self.name(),
+            'week_previous': first - datetime.timedelta(days=7),
+            'week_next': first + datetime.timedelta(days=7),
+            'week_names': self.get_week_names(),
             'week_first': first,
             'week_last': last,
         }
         return calendar_data
-
-
-class ShiftWithScheduleMixin(WeekCalendarMixin):
+class ShiftWithScheduleMixin(PizzaMixin):
 
     def get_week_schedules(self, start, end, days):
         
@@ -336,7 +138,7 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
         )
         return calendar_context
 
-class ShopShiftWithScheduleMixin(WeekCalendarMixin):
+class ShopShiftWithScheduleMixin(PizzaMixin):
 
     def get_week_schedules(self, start, end, days):
         
@@ -431,17 +233,6 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
                 o.append(f)
         df.loc["過不足"]=o 
                   
-        # for shop_config_day,hope_pa in zip(queryset,df_num):
-        #     # print(shop_config_day.day_need)
-        #     if shop[0] == shop_config_day.shops:
-        #         date = shop_config_day.date
-        #         need = shop_config_day.day_need
-        #         hope = hope_pa -need
-        #         # print(hope_pa,need,"あ",hope,date)
-        #         df.at["過不足",date] =hope
-        #         df.fillna(" ", inplace=True)
-        #     else:
-        #         pass        
         return df
 
     def get_week_calendar(self):
@@ -453,25 +244,6 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
         )
         return calendar_context
 
-class WeekWithScheduleMixin(WeekCalendarMixin):
-    """スケジュール付きの、週間カレンダーを提供するMixin"""
-
-    def get_week_schedules(self, start, end, days):
-        """それぞれの日とスケジュールを返す"""
-        lookup = {
-            # '例えば、date__range: (1日, 31日)'を動的に作る
-            '{}__range'.format(self.date_field): (start, end),
-            'user__pk': self.kwargs.get('user_pk'),
-        }
-        # 例えば、Schedule.objects.filter(date__range=(1日, 31日)) になる
-        queryset = self.model.objects.filter(**lookup)
-
-        # {1日のdatetime: 1日のスケジュール全て, 2日のdatetime: 2日の全て...}のような辞書を作る
-        day_schedules = {day: [] for day in days}
-        for schedule in queryset:
-            schedule_date = getattr(schedule, self.date_field)
-            day_schedules[schedule_date].append(schedule)
-        return day_schedules
 
     def get_week_calendar(self):
         calendar_context = super().get_week_calendar()
@@ -483,39 +255,8 @@ class WeekWithScheduleMixin(WeekCalendarMixin):
         return calendar_context
 
 
-class MonthWithScheduleMixin(MonthCalendarMixin):
-    """スケジュール付きの、月間カレンダーを提供するMixin"""
 
-    def get_month_schedules(self, start, end, days):
-        """それぞれの日とスケジュールを返す"""
-        lookup = {
-            '{}__range'.format(self.date_field): (start, end),
-            'user__pk': self.kwargs.get('user_pk'),
-        }
-        queryset = self.model.objects.filter(**lookup)
-
-        day_schedules = {day: [] for week in days for day in week}
-        for schedule in queryset:
-            schedule_date = getattr(schedule, self.date_field)
-            day_schedules[schedule_date].append(schedule)
-
-        size = len(day_schedules)
-        return [{key: day_schedules[key] for key in itertools.islice(day_schedules, i, i+7)} for i in range(0, size, 7)]
-
-    def get_month_calendar(self):
-        calendar_context = super().get_month_calendar()
-        month_days = calendar_context['month_days']
-        month_first = month_days[0][0]
-        month_last = month_days[-1][-1]
-        calendar_context['month_day_schedules'] = self.get_month_schedules(
-            month_first,
-            month_last,
-            month_days
-        )
-        return calendar_context
-
-
-class MonthWithFormsMixin(MonthCalendarMixin):
+class MonthWithFormsMixin(PizzaMixin):
     """スケジュール付きの、月間カレンダーを提供するMixin"""
 
     def get_month_forms(self, start, end, days):
@@ -560,8 +301,8 @@ class MonthWithFormsMixin(MonthCalendarMixin):
         return [{key: day_forms[key] for key in itertools.islice(day_forms, 0, days_count)}]
 
     def get_month_calendar(self):
-        calendar_context = super().get_month_calendar()
-        month_days = calendar_context['month_days']
+        calendar_context = super().get_week_calendar()
+        month_days = calendar_context['week_days']
         month_first = month_days[0]
         month_last = month_days[-1]
         calendar_context['month_day_forms'] = self.get_month_forms(
@@ -573,7 +314,7 @@ class MonthWithFormsMixin(MonthCalendarMixin):
         
         return calendar_context
 
-class Day_configMixin(MonthCalendarMixin):
+class Day_configMixin(PizzaMixin):
     """スケジュール付きの、月間カレンダーを提供するMixin"""
 
     def get_month_forms(self, start, end, days):
@@ -619,8 +360,8 @@ class Day_configMixin(MonthCalendarMixin):
         return [{key: day_forms[key] for key in itertools.islice(day_forms, 0, days_count)}]
 
     def get_month_calendar(self):
-        calendar_context = super().get_month_calendar()
-        month_days = calendar_context['month_days']
+        calendar_context = super().get_week_calendar()
+        month_days = calendar_context['week_days']
         month_first = month_days[0]
         month_last = month_days[-1]
         calendar_context['month_day_forms'] = self.get_month_forms(
@@ -631,7 +372,7 @@ class Day_configMixin(MonthCalendarMixin):
         calendar_context['month_formset'] = self.month_formset
         
         return calendar_context
-class Week_CsvMixin(BaseCalendarMixin):
+class Week_CsvMixin(PizzaMixin):
     """週間カレンダーの機能を提供するMixin"""
 
     def get_previous_week(self, date):
@@ -666,22 +407,6 @@ class Week_CsvMixin(BaseCalendarMixin):
 
         else:
             pass
-        #     date = datetime.date.today()
-        #     year =int(date.year)
-        #     month=int(date.month)
-        #     day=int(date.day)
-        #     if date.day < 21 and date.day > 5:
-        #         dtm = calendar.monthrange(year,month)[1]
-        #         date = datetime.date(year = int(year),month=int(month),day = int(15))
-        #         dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-
-        #         return dtlist
-        #     if date.day < 6:
-        #         date = datetime.date(year = int(year),month=int(month+1),day = int(1))
-        #         dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
-        #         return dtlist
-            
-
 
     def name(self):
         weekname=['月','火','水','木','金','土','日']

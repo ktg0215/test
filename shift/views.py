@@ -87,66 +87,6 @@ class Shift_csv(mixins.CsvMixin, generic.TemplateView):
         df.to_csv(path_or_buf=response, float_format='%.2f', index=True, decimal=",", encoding='shift_jis')
         return response
 
-class WeekWithScheduleCalendar(mixins.WeekWithScheduleMixin, generic.TemplateView):
-    """スケジュール付きの週間カレンダーを表示するビュー"""
-    template_name = 'shift/week_with_schedule.html'
-    model = Schedule
-    date_field = 'date'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = get_object_or_404(User, pk=self.kwargs['user_pk'])
-        calendar_context = self.get_week_calendar()
-        context.update(calendar_context)
-        return context
-
-
-class MonthWithScheduleCalendar(mixins.MonthWithScheduleMixin, generic.TemplateView):
-    """スケジュール付きの月間カレンダーを表示するビュー"""
-    template_name = 'shift/month_with_schedule.html'
-    model = Schedule
-    date_field = 'date'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = get_object_or_404(User, pk=self.kwargs['user_pk'])
-        calendar_context = self.get_month_calendar()
-        context.update(calendar_context)
-        return context
-
-
-class MyCalendar(mixins.MonthCalendarMixin, mixins.WeekWithScheduleMixin, generic.CreateView):
-    """月間カレンダー、週間カレンダー、スケジュール登録画面のある欲張りビュー"""
-    template_name = 'shift/mycalendar.html'
-    model = Schedule
-    date_field = 'date'
-    form_class = BS4ScheduleForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = get_object_or_404(User, pk=self.kwargs['user_pk'])
-        
-        week_calendar_context = self.get_week_calendar()
-        month_calendar_context = self.get_month_calendar()
-        context.update(week_calendar_context)
-        context.update(month_calendar_context)
-        return context
-
-    def form_valid(self, form):
-        month = self.kwargs.get('month')
-        year = self.kwargs.get('year')
-        day = self.kwargs.get('day')
-        user_pk = self.kwargs['user_pk']
-        if month and year and day:
-            date = datetime.date(year=int(year), month=int(month), day=int(day))
-        else:
-            date = datetime.date.today()
-        schedule = form.save(commit=False)
-        schedule.date = date
-        schedule.user = get_object_or_404(User, pk=user_pk)
-        schedule.save()
-        return redirect('shift:mycalendar', year=date.year, month=date.month, day=date.day, user_pk=user_pk)
-
 
 class MonthWithFormsCalendar(mixins.MonthWithFormsMixin, generic.View):
     """フォーム付きの月間カレンダーを表示するビュー"""

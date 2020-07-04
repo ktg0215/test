@@ -57,19 +57,18 @@ class Shoplist(generic.ListView):
         # context['shop'] = self.shop
         shop =self.kwargs['pk']
         context['shops']= User.objects.filter(shops__shop=shop)
-        # bb=Shops.objects.all()
-        bb=Shops.objects.values('shop').distinct()
+        bb=Shops.objects.all()
+        print(bb)
         c=[]
+        b= 0
         for a in bb:
-            x=a["shop"]
-            c.append(x)
-        n=[]
-        for a in c:
-            g=Shops.objects.filter(shop=a)
-            n.append(g)
-        print(n)
-               
-        context['bshop']=bb
+            if a.shop ==b:
+                print(415456454)
+                pass
+            else:
+                c.append(a)
+                b =a.shop
+        context['bshop']=c
         
         return context
 

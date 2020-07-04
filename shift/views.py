@@ -50,6 +50,7 @@ class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
         bb=Shops.objects.all()
         c=[]
         b= 0
+        
         for a in bb:
             if a.shop ==b:
                 pass
@@ -58,11 +59,7 @@ class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
                 b =a.shop
         context['bshop']=c
         context['shopnum']=self.kwargs['shops_pk']
-        context['config']= Shop_config_day.objects.filter(shops=shop)
-        context['base_config']= Shop_config.objects.filter(shops=shop)
-        base_config= Shop_config.objects.filter(shops=shop)
 
-        print(base_config)
         calendar_context = self.get_week_calendar()
         context.update(calendar_context)
         return context   
@@ -86,6 +83,34 @@ class Shift_csv(mixins.CsvMixin, generic.TemplateView):
         # response.write(df)
         df.to_csv(path_or_buf=response, float_format='%.2f', index=True, decimal=",", encoding='shift_jis')
         return response
+
+class WeekWithScheduleCalendar(mixins.WeekWithScheduleMixin, generic.TemplateView):
+    """スケジュール付きの週間カレンダーを表示するビュー"""
+    template_name = 'shift/week_with_schedule.html'
+    model = Schedule
+    date_field = 'date'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = get_object_or_404(User, pk=self.kwargs['user_pk'])
+        calendar_context = self.get_week_calendar()
+        context.update(calendar_context)
+        return context
+
+
+class MonthWithScheduleCalendar(mixins.MonthWithScheduleMixin, generic.TemplateView):
+    """スケジュール付きの月間カレンダーを表示するビュー"""
+    template_name = 'shift/month_with_schedule.html'
+    model = Schedule
+    date_field = 'date'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = get_object_or_404(User, pk=self.kwargs['user_pk'])
+        calendar_context = self.get_week_calendar()
+        context.update(calendar_context)
+        return context
+
 
 
 class MonthWithFormsCalendar(mixins.MonthWithFormsMixin, generic.View):

@@ -63,7 +63,6 @@ class Shoplist(generic.ListView):
         b= 0
         for a in bb:
             if a.shop ==b:
-                print(415456454)
                 pass
             else:
                 c.append(a)

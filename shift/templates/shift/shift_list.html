@@ -68,17 +68,10 @@
     <td  bgcolor="#EEEEEE">{{row.4}}</td>
     <td  bgcolor="#EEEEEE">{{row.5}}</td>
     <td  bgcolor="#EEEEEE">{{row.6}}</td>
-    <td  bgcolor="#EEEEEE">{{row.7}}</td>
-    <td  bgcolor="#EEEEEE">{{row.8}}</td>
-    <td  bgcolor="#EEEEEE">{{row.9}}</td>
-    <td  bgcolor="#EEEEEE">{{row.10}}</td>
-    <td  bgcolor="#EEEEEE">{{row.11}}</td>
-    <td  bgcolor="#EEEEEE">{{row.12}}</td>
-    <td  bgcolor="#EEEEEE">{{row.13}}</td>
-    <td  bgcolor="#EEEEEE">{{row.14}}</td>
     
     
-    <td  bgcolor="#EEEEEE">{{row.15}}</td>
+    
+    
    
 </tr>
 {% elif index == "必要人数" %}
@@ -92,14 +85,7 @@
     <td  bgcolor="#EEEEEE">{{row.4}}</td>
     <td  bgcolor="#EEEEEE">{{row.5}}</td>
     <td  bgcolor="#EEEEEE">{{row.6}}</td>
-    <td  bgcolor="#EEEEEE">{{row.7}}</td>
-    <td  bgcolor="#EEEEEE">{{row.8}}</td>
-    <td  bgcolor="#EEEEEE">{{row.9}}</td>
-    <td  bgcolor="#EEEEEE">{{row.10}}</td>
-    <td  bgcolor="#EEEEEE">{{row.11}}</td>
-    <td  bgcolor="#EEEEEE">{{row.12}}</td>
-    <td  bgcolor="#EEEEEE">{{row.13}}</td>
-    <td  bgcolor="#EEEEEE">{{row.14}}</td>
+   
     
     
     <td  bgcolor="#EEEEEE">{{row.15}}</td>
@@ -144,51 +130,7 @@
     {% else %}
     <td  bgcolor="#EEEEEE">{{row.6}}</td>
     {% endif %}
-    {% if row.7 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.7}}</td>
-    {% else %}
-    <td  bgcolor="#EEEEEE">{{row.7}}</td>
-    {% endif %}
-    {% if row.8 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.8}}</td>
-    {% else %}
-    <td  bgcolor="#EEEEEE">{{row.8}}</td>
-    {% endif %}
-    {% if row.9 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.9}}</td>
-    {% else %}
-    <td  bgcolor="#EEEEEE">{{row.9}}</td>
-    {% endif %}
-    {% if row.10 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.10}}</td>
-    {% else %}
-    <td  bgcolor="#EEEEEE">{{row.10}}</td>
-    {% endif %}
-    {% if row.11 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.11}}</td>
-    {% else %}
-    <td  bgcolor="#EEEEEE">{{row.11}}</td>
-    {% endif %}
-    {% if row.12 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.12}}</td>
-    {% else %}
-    <td  bgcolor="#EEEEEE">{{row.12}}</td>
-    {% endif %}
-    {% if row.13 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.13}}</td>
-    {% else %}
-    <td  bgcolor="#EEEEEE">{{row.13}}</td>
-    {% endif %}
-    {% if row.14 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.14}}</td>
-    {% else %}
-    <td  bgcolor="#EEEEEE">{{row.14}}</td>
-    {% endif %}
-    {% if row.15 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.15}}</td>
-    {% else %}
-    <td  bgcolor="#EEEEEE">{{row.15}}</td>
-    {% endif %}
+    
    
 </tr>
 {% else %}
@@ -203,15 +145,7 @@
     <td>{{row.4.get_start_time_display}}-{{row.4.get_end_time_display}}</td>
     <td>{{row.5.get_start_time_display}}-{{row.5.get_end_time_display}}</td>
     <td>{{row.6.get_start_time_display}}-{{row.6.get_end_time_display}}</td>
-    <td>{{row.7.get_start_time_display}}-{{row.7.get_end_time_display}}</td>
-    <td>{{row.8.get_start_time_display}}-{{row.8.get_end_time_display}}</td>
-    <td>{{row.9.get_start_time_display}}-{{row.9.get_end_time_display}}</td>
-    <td>{{row.10.get_start_time_display}}-{{row.10.get_end_time_display}}</td>
-    <td>{{row.11.get_start_time_display}}-{{row.11.get_end_time_display}}</td>
-    <td>{{row.12.get_start_time_display}}-{{row.12.get_end_time_display}}</td>
-    <td>{{row.13.get_start_time_display}}-{{row.13.get_end_time_display}}</td>
-    <td>{{row.14.get_start_time_display}}-{{row.14.get_end_time_display}}</td>
-    <td>{{row.15.get_start_time_display}}-{{row.15.get_end_time_display}}</td>
+   
 </tr>
 {% endif %}
 {% endfor %}

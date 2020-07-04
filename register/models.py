@@ -106,7 +106,7 @@ class UserData(models.Model):
     start_day = models.DateField("入店日",blank=True,default=datetime(1999, 1, 1))
     user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     def __str__(self):
-        return self.start_day,self.date_of_birth
+        return f"{self.user.last_name} {self.start_day}"
     
     @property
     def age(self):

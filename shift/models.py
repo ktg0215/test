@@ -38,7 +38,7 @@ class Schedule(models.Model):
 
 
     def __str__(self):
-        return f"{self.user.last_name} {self.date}"
+        return f"{self.user.last_name} {self.date}{self.start_time}"
 
 class Shop_config(models.Model):
     shops = models.OneToOneField(Shops,on_delete=models.CASCADE)

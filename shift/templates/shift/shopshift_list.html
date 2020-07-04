@@ -33,8 +33,8 @@
     </div>  </div>
 <nav aria-label="Page navigation example">
     <ul class="pagination">
-      <li class="page-item"><a class="page-link" href="{% url 'shift:shift_list'  week_previous.year week_previous.month week_previous.day %}">前</a></li>
-      <li class="page-item"><a class="page-link" href="{% url 'shift:shift_list'  week_next.year week_next.month week_previous.day %}">次</a></li>
+      <li class="page-item"><a class="page-link" href="{% url 'shift:shopshift_list'  shopnum week_previous.year week_previous.month week_previous.day %}">前</a></li>
+      <li class="page-item"><a class="page-link" href="{% url 'shift:shopshift_list'  shopnum week_next.year week_next.month week_previous.day %}">次</a></li>
     </ul>
   </nav>
 
@@ -139,17 +139,17 @@
 </tr>
 {% else %}
 <tr>
-    <th>{{index}}</th>
-    
-    
-    <td>{{ row.0.get_start_time_display}}-{{ row.0.get_end_time_display }}</td>
-    <td>{{row.1.get_start_time_display}}-{{row.1.get_end_time_display}}</td>
-    <td>{{row.2.get_start_time_display}}-{{row.2.get_end_time_display}}</td>
-    <td>{{row.3.get_start_time_display}}-{{row.3.get_end_time_display}}</td>
-    <td>{{row.4.get_start_time_display}}-{{row.4.get_end_time_display}}</td>
-    <td>{{row.5.get_start_time_display}}-{{row.5.get_end_time_display}}</td>
-    <td>{{row.6.get_start_time_display}}-{{row.6.get_end_time_display}}</td>
-   
+  <th>{{index}}</th>
+  
+  
+  <td>{{ row.0 }}</td>
+  <td>{{row.1}}</td>
+  <td>{{row.2}}</td>
+  <td>{{row.3}}</td>
+  <td>{{row.4}}</td>
+  <td>{{row.5}}</td>
+  <td>{{row.6}}</td>
+ 
 </tr>
 {% endif %}
 {% endfor %}

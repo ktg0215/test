@@ -37,20 +37,20 @@ class ShiftList(mixins.ShiftWithScheduleMixin, generic.ListView):
         return context
         
 class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
-    """ユーザーの一覧"""
+    
     model = Schedule
     template_name = 'shift/shopshift_list.html'
     date_field = 'date'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        calendar_context = self.get_week_calendar()
         # shop = get_object_or_404(Shops, pk=self.kwargs['shops_pk'])
         shop =self.kwargs['shops_pk']
         context['shops']= User.objects.filter(shops__shop=shop)
         bb=Shops.objects.all()
         c=[]
         b= 0
-        
         for a in bb:
             if a.shop ==b:
                 pass
@@ -59,8 +59,7 @@ class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
                 b =a.shop
         context['bshop']=c
         context['shopnum']=self.kwargs['shops_pk']
-
-        calendar_context = self.get_week_calendar()
+        
         context.update(calendar_context)
         return context   
 

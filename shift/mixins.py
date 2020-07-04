@@ -66,7 +66,7 @@ class ShiftWithScheduleMixin(PizzaMixin):
             '{}__range'.format(self.date_field): (start, end),
            
         }
-        queryset = self.model.objects.filter(**lookup).order_by('user__userdata__start_day')
+        queryset = self.model.objects.filter(**lookup)
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
         df.loc["希望人数"]=0
@@ -77,10 +77,10 @@ class ShiftWithScheduleMixin(PizzaMixin):
             if a == 1:
                 user=schedule.user.last_name+' '+schedule.user.first_name
                 date= schedule.date
-                # start_time=schedule.get_start_time_display()
-                # end_time = schedule.get_end_time_display()
-                # time = start_time+'-'+end_time
-                ddf =pd.DataFrame({date:schedule},index =[user])
+                start_time=schedule.get_start_time_display()
+                end_time = schedule.get_end_time_display()
+                time = start_time+'-'+end_time
+                ddf =pd.DataFrame({date:time},index =[user])
                 df = pd.concat([df,ddf],axis=0)
                 df.fillna(" ", inplace=True)
                 a = 2
@@ -88,23 +88,25 @@ class ShiftWithScheduleMixin(PizzaMixin):
             elif user != schedule.user.last_name+' '+schedule.user.first_name: 
                 user=schedule.user.last_name+' '+schedule.user.first_name
                 date= schedule.date
-                # start_time=schedule.get_start_time_display()
-                # end_time = schedule.get_end_time_display()
-                # time = start_time+'-'+end_time
-                ddf =pd.DataFrame({date:schedule},index =[user])
+
+                start_time=schedule.get_start_time_display()
+                end_time = schedule.get_end_time_display()
+                time = start_time+'-'+end_time
+                ddf =pd.DataFrame({date:time},index =[user])
                 df = pd.concat([df,ddf],axis=0)
                 df.fillna(" ", inplace=True)
                 
             else:    
                 user=schedule.user.last_name+' '+schedule.user.first_name
                 date= schedule.date
-                # start_time=schedule.get_start_time_display()
-                # end_time = schedule.get_end_time_display()
-                # time = start_time+'-'+end_time
+
+                start_time=schedule.get_start_time_display()
+                end_time = schedule.get_end_time_display()
+                time = start_time+'-'+end_time
                 
                 # ddf =pd.DataFrame({date:time},index =[user])
                 df[date]= df[date].astype(str)
-                df.at[user,date] =schedule
+                df.at[user,date] =time
                 df.fillna(" ", inplace=True) 
                
         df.fillna(" ", inplace=True)
@@ -121,6 +123,7 @@ class ShiftWithScheduleMixin(PizzaMixin):
             df_num.append(b)
 
         df.loc["希望人数"]=df_num
+        print(df)
 
         return df
 
@@ -162,7 +165,10 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
                 if a == 1:
                     user=schedule.user.last_name+' '+schedule.user.first_name
                     date= schedule.date
-                    ddf =pd.DataFrame({date:schedule},index =[user])
+                    start_time=schedule.get_start_time_display()
+                    end_time = schedule.get_end_time_display()
+                    time = start_time+'-'+end_time
+                    ddf =pd.DataFrame({date:time},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
                     a = 2
@@ -170,16 +176,26 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
                 elif user != schedule.user.last_name+' '+schedule.user.first_name: 
                     user=schedule.user.last_name+' '+schedule.user.first_name
                     date= schedule.date
-                    ddf =pd.DataFrame({date:schedule},index =[user])
+
+                    start_time=schedule.get_start_time_display()
+                    end_time = schedule.get_end_time_display()
+                    time = start_time+'-'+end_time
+                    ddf =pd.DataFrame({date:time},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
                     
                 else:    
                     user=schedule.user.last_name+' '+schedule.user.first_name
                     date= schedule.date
+
+                    start_time=schedule.get_start_time_display()
+                    end_time = schedule.get_end_time_display()
+                    time = start_time+'-'+end_time
+                    
+                    # ddf =pd.DataFrame({date:time},index =[user])
                     df[date]= df[date].astype(str)
-                    df.at[user,date] =schedule
-                    df.fillna(" ", inplace=True) 
+                    df.at[user,date] =time
+                    df.fillna(" ", inplace=True)
             else:
                 pass
                    

@@ -32,15 +32,16 @@ class Userlist(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['shops']=User.objects.all()
-        bb=Shops.objects.all()
+        bb=Shops.objects.all().order_by('shop')
         c=[]
+        h=[]
         b= 0
         for a in bb:
-            if a.shop ==b:
+            if a.shop in h:
                 pass
             else:
                 c.append(a)
-                b =a.shop
+                h.append(a.shop)
         context['bshop']=c
         
         return context
@@ -57,16 +58,16 @@ class Shoplist(generic.ListView):
         # context['shop'] = self.shop
         shop =self.kwargs['pk']
         context['shops']= User.objects.filter(shops__shop=shop)
-        bb=Shops.objects.all()
-        print(bb)
+        bb=Shops.objects.all().order_by('shop')
         c=[]
+        h=[]
         b= 0
         for a in bb:
-            if a.shop ==b:
+            if a.shop in h:
                 pass
             else:
                 c.append(a)
-                b =a.shop
+                h.append(a.shop)
         context['bshop']=c
         
         return context

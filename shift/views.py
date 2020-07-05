@@ -23,15 +23,18 @@ class ShiftList(mixins.ShiftWithScheduleMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         calendar_context = self.get_week_calendar()
-        bb=Shops.objects.all()
+        bb=Shops.objects.all().order_by('shop')
         c=[]
+        h=[]
         b= 0
         for a in bb:
-            if a.shop ==b:
+            if a.shop in h:
                 pass
             else:
                 c.append(a)
-                b =a.shop
+                h.append(a.shop)
+                
+                
         context['bshop']=c
         context.update(calendar_context)
         return context
@@ -46,17 +49,20 @@ class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
         context = super().get_context_data(**kwargs)
         calendar_context = self.get_week_calendar()
         # shop = get_object_or_404(Shops, pk=self.kwargs['shops_pk'])
-        shop =self.kwargs['shops_pk']
-        context['shops']= User.objects.filter(shops__shop=shop)
-        bb=Shops.objects.all()
+        # shop =self.kwargs['shops_pk']
+        # context['shops']= User.objects.filter(shops__shop=shop)
+        bb=Shops.objects.all().order_by('shop')
+        print(bb)
         c=[]
+        h=[]
         b= 0
         for a in bb:
-            if a.shop ==b:
+            if a.shop in h:
                 pass
             else:
                 c.append(a)
-                b =a.shop
+                h.append(a.shop)
+        print(c)
         context['bshop']=c
         context['shopnum']=self.kwargs['shops_pk']
         

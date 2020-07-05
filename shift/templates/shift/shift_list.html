@@ -34,7 +34,7 @@
 <nav aria-label="Page navigation example">
     <ul class="pagination">
       <li class="page-item"><a class="page-link" href="{% url 'shift:shift_list'  week_previous.year week_previous.month week_previous.day %}">前</a></li>
-      <li class="page-item"><a class="page-link" href="{% url 'shift:shift_list'  week_next.year week_next.month week_previous.day %}">次</a></li>
+      <li class="page-item"><a class="page-link" href="{% url 'shift:shift_list'  week_next.year week_next.month week_next.day %}">次</a></li>
     </ul>
   </nav>
 

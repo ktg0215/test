@@ -99,7 +99,7 @@ class Shops(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,)
     
     def __int__(self):
-        return self.shop
+        return self.get_shop_display()
 
 class UserData(models.Model):
     date_of_birth = models.DateField("生年月日",blank=True,default=datetime(1999, 1, 1))

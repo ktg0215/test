@@ -33,11 +33,11 @@ class PizzaMixin(BaseCalendarMixin):
         month = self.kwargs.get('month')
         year = self.kwargs.get('year')
         day = self.kwargs.get('day')
+        
         if month and year and day:
             date = datetime.date(year=int(year), month=int(month), day=int(day))
         else:
             date = datetime.date.today()
-
         for week in self._calendar.monthdatescalendar(date.year, date.month):
             if date in week:  # 週ごとに取り出され、中身は全てdatetime.date型。該当の日が含まれていれば、それが今回表示すべき週です
                 return week
@@ -66,7 +66,7 @@ class ShiftWithScheduleMixin(PizzaMixin):
             '{}__range'.format(self.date_field): (start, end),
            
         }
-        queryset = self.model.objects.filter(**lookup)
+        queryset = self.model.objects.filter(**lookup).order_by('user__userdata__start_day')
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
         df.loc["希望人数"]=0
@@ -123,7 +123,6 @@ class ShiftWithScheduleMixin(PizzaMixin):
             df_num.append(b)
 
         df.loc["希望人数"]=df_num
-        print(df)
 
         return df
 
@@ -151,7 +150,7 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
             '{}__range'.format(self.date_field): (start, end),
                  
         }
-        queryset = self.model.objects.filter(**lookup)
+        queryset = self.model.objects.filter(**lookup).order_by('user__userdata__start_day')
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
         # df.loc["希望人数"]=0
@@ -466,19 +465,22 @@ class Week_CsvMixin(BaseCalendarMixin):
         day = self.kwargs.get('day')
         if month and year and day:
             date = datetime.date(year=int(year), month=int(month), day=int(day))
+        for week in self._calendar.monthdatescalendar(date.year, date.month):
+            if date in week:  # 週ごとに取り出され、中身は全てdatetime.date型。該当の日が含まれていれば、それが今回表示すべき週です
+                return week
 
-            if date.day < 21 and date.day > 5:
-                dtm = calendar.monthrange(year,month)[1]
-                date = datetime.date(year = int(year),month=int(month),day=int(15))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-                return dtlist
-            if date.day < 6:
-                date = datetime.date(year = int(year),month=int(month),day = int(1))
-                dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
-                return dtlist
+            # if date.day < 21 and date.day > 5:
+            #     dtm = calendar.monthrange(year,month)[1]
+            #     date = datetime.date(year = int(year),month=int(month),day=int(15))
+            #     dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
+            #     return dtlist
+            # if date.day < 6:
+            #     date = datetime.date(year = int(year),month=int(month),day = int(1))
+            #     dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
+            #     return dtlist
 
-        else:
-            pass
+        # else:
+        #     pass
         #     date = datetime.date.today()
         #     year =int(date.year)
         #     month=int(date.month)

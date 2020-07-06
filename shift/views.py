@@ -8,6 +8,8 @@ from . import mixins
 from .models import User
 from register.models import Shops
 from django.urls import reverse
+from django.http import HttpResponse
+import csv
 
 User = get_user_model()
 
@@ -21,6 +23,19 @@ class ShiftList(mixins.ShiftWithScheduleMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         calendar_context = self.get_week_calendar()
+        bb=Shops.objects.all().order_by('shop')
+        c=[]
+        h=[]
+        b= 0
+        for a in bb:
+            if a.shop in h:
+                pass
+            else:
+                c.append(a)
+                h.append(a.shop)
+                
+                
+        context['bshop']=c
         context.update(calendar_context)
         return context
         
@@ -32,17 +47,46 @@ class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        shop = get_object_or_404(Shops, pk=self.kwargs['shops_pk'])
-        context['shops']= User.objects.filter(shops__shop=shop)
+        calendar_context = self.get_week_calendar()
+        # shop = get_object_or_404(Shops, pk=self.kwargs['shops_pk'])
+        # shop =self.kwargs['shops_pk']
+        # context['shops']= User.objects.filter(shops__shop=shop)
+        bb=Shops.objects.all().order_by('shop')
+        print(bb)
+        c=[]
+        h=[]
+        b= 0
+        for a in bb:
+            if a.shop in h:
+                pass
+            else:
+                c.append(a)
+                h.append(a.shop)
+        print(c)
+        context['bshop']=c
         context['shopnum']=self.kwargs['shops_pk']
-        context['config']= Shop_config_day.objects.filter(shops=shop)
-        context['base_config']= Shop_config.objects.filter(shops=shop)
-        base_config= Shop_config.objects.filter(shops=shop)
+        
+        context.update(calendar_context)
+        return context   
+class Shift_csv(mixins.CsvMixin, generic.TemplateView):    
+    model = Schedule
+    template_name = 'shift/shift_csv.html'
+    date_field = 'date'
 
-        print(base_config)
+    def get(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        # shop = get_object_or_404(Shops, pk=self.kwargs['shops_pk'])
+        context['shop'] =self.kwargs['shops_pk']
         calendar_context = self.get_week_calendar()
         context.update(calendar_context)
-        return context       
+        df = context['df']
+        today = datetime.date.today()
+        filename= today
+        response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
+        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(filename)
+        # response.write(df)
+        df.to_csv(path_or_buf=response, float_format='%.2f', index=True, decimal=",", encoding='shift_jis')
+        return response
 
 class WeekWithScheduleCalendar(mixins.WeekWithScheduleMixin, generic.TemplateView):
     """スケジュール付きの週間カレンダーを表示するビュー"""

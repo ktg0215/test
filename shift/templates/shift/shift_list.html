@@ -20,10 +20,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-item nav-link" href="{% url 'shift:shopshift_list' 1 %}">目黒店</a>
-        <a class="nav-item nav-link" href="{% url 'shift:shopshift_list' 5 %}">上野広小路店</a>
-        <a class="nav-item nav-link" href="{% url 'shift:shopshift_list' 4 %}">神保町白山通り店</a>
-        <a class="nav-item nav-link" href="{% url 'shift:shopshift_list' 6 %}">北千住店</a>
+        {% for s in bshop %}
+        <a class="nav-item nav-link" href="{% url 'shift:shopshift_list' s.shop %}">{{s.get_shop_display}}店</a>
+        {% endfor %}
+        
       </div>
     </div>
   </nav>
@@ -41,84 +41,72 @@
 <table class="table table-bordered"　>
   <th>User</th>
   {% for day in df %}
-    <th>{{day | date:"j" }}日 {% if day|date:"D" == "日" %}</th>
-        <small></small>
-           <th> <span style="color: #F00;">({{ day | date:"D" }})</span>
-        </small></th>
-        {% elif day|date:"D" == "土" %}
-        <small>
-            <th>  <span style="color:#0000FF">({{ day | date:"D" }})</span>
-        </small></th>
-        {% else %}
-        <th>  <small>({{ day|date:"D" }})</small></th>
-     {% endif %} {% endfor %}
+  <th>{{day | date:"j" }}日 
+    {% if day|date:"D" == "日" %}
+      <small>
+          <span style="color: #F00;">({{ day | date:"D" }})</span>
+      </small></th>
+      {% elif day|date:"D" == "土" %}
+      <small>
+            <span style="color:#0000FF">({{ day | date:"D" }})</span>
+      </small></th>
+      {% else %}
+        <small>({{ day|date:"D" }})</small></th>
+  
+             {% endif %} {% endfor %}
 
   {% for index,row in df.iterrows %}
 {% if index == "希望人数" %}
 
 <tr>    
   <th bgcolor="#EEEEEE">{{index}}</th>
-  <td  bgcolor="#EEEEEE">{{row.0}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.1}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.2}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.3}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.4}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.5}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.6}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.7}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.8}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.9}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.10}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.11}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.12}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.13}}</td><td>--</td>
-    <td  bgcolor="#EEEEEE">{{row.14}}</td><td>--</td>
+  <td  bgcolor="#EEEEEE">{{row.0}}</td>
+    <td  bgcolor="#EEEEEE">{{row.1}}</td>
+    <td  bgcolor="#EEEEEE">{{row.2}}</td>
+    <td  bgcolor="#EEEEEE">{{row.3}}</td>
+    <td  bgcolor="#EEEEEE">{{row.4}}</td>
+    <td  bgcolor="#EEEEEE">{{row.5}}</td>
+    <td  bgcolor="#EEEEEE">{{row.6}}</td>
+    <td  bgcolor="#EEEEEE">{{row.7}}</td>
+    <td  bgcolor="#EEEEEE">{{row.8}}</td>
+    <td  bgcolor="#EEEEEE">{{row.9}}</td>
+    <td  bgcolor="#EEEEEE">{{row.10}}</td>
+    <td  bgcolor="#EEEEEE">{{row.11}}</td>
+    <td  bgcolor="#EEEEEE">{{row.12}}</td>
+    <td  bgcolor="#EEEEEE">{{row.13}}</td>
+    <td  bgcolor="#EEEEEE">{{row.14}}</td>
+    {% if row.15 == None %}
     
+    {% else %}
     
-    <td  bgcolor="#EEEEEE">{{row.15}}</td><td>--</td>
-  
+    <td  bgcolor="#EEEEEE">{{row.15}}</td>
+    {% endif %}
 </tr>
 {% else %}
 
 <tr>    
   <th>{{index}}</th>
-  <td>{{ row.0.get_start_time_display}}</td>
-    <td>{{ row.0.get_end_time_display }}</td>
-    <td>{{row.1.get_start_time_display}}</td>
-    <td>{{row.1.get_end_time_display}}</td>
-    <td>{{row.2.get_start_time_display}}</td>
-    <td>{{row.2.get_end_time_display}}</td>
-    <td>{{row.3.get_start_time_display}}</td>
-    <td>{{row.3.get_end_time_display}}</td>
-    <td>{{row.4.get_start_time_display}}</td>
-    <td>{{row.4.get_end_time_display}}</td>
-    <td>{{row.5.get_start_time_display}}</td>
-    <td>{{row.5.get_end_time_display}}</td>
-    <td>{{row.6.get_start_time_display}}</td>
-    <td>{{row.6.get_end_time_display}}</td>
-    <td>{{row.7.get_start_time_display}}</td>
-    <td>{{row.7.get_end_time_display}}</td>
-    <td>{{row.8.get_start_time_display}}</td>
-    <td>{{row.8.get_end_time_display}}</td>
-    <td>{{row.9.get_start_time_display}}</td>
-    <td>{{row.9.get_end_time_display}}</td>
-    <td>{{row.10.get_start_time_display}}</td>
-    <td>{{row.10.get_end_time_display}}</td>
-    <td>{{row.11.get_start_time_display}}</td>
-    <td>{{row.11.get_end_time_display}}</td>
-    <td>{{row.12.get_start_time_display}}</td>
-    <td>{{row.12.get_end_time_display}}</td>
-    <td>{{row.13.get_start_time_display}}</td>
-    <td>{{row.13.get_end_time_display}}</td>
-    <td>{{row.14.get_start_time_display}}</td>
-    <td>{{row.14.get_end_time_display}}</td>
-    <td>{{row.15.get_start_time_display}}</td>
-    <td>{{row.15.get_end_time_display}}</td>
-  
-  {% if row.15 == True %}
-  <td>{{row.15}}</td>
-  {% else %}
-  {% endif %}
+  <td>{{ row.0}}</td>
+    <td>{{row.1}}</td>
+    <td>{{row.2}}</td>
+    <td>{{row.3}}</td>
+    <td>{{row.4}}</td>
+    <td>{{row.5}}</td>
+    <td>{{row.6}}</td>
+    <td>{{row.7}}</td>
+    <td>{{row.8}}</td>
+    <td>{{row.9}}</td>
+    <td>{{row.10}}</td>
+    <td>{{row.11}}</td>
+    <td>{{row.12}}</td>
+    <td>{{row.13}}</td>
+    <td>{{row.14}}</td>
+    {% if row.15 == None %}
+    
+    {% else %}
+    <td>{{row.15}}</td>
+    {% endif %}
+
 </tr>
 {% endif %}
 {% endfor %}

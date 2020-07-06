@@ -280,10 +280,12 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
             if a == 1:
                 user=schedule.user.last_name+' '+schedule.user.first_name
                 date= schedule.date
-                # start_time=schedule.get_start_time_display()
-                # end_time = schedule.get_end_time_display()
-                # time = start_time+'-'+end_time
-                ddf =pd.DataFrame({date:schedule},index =[user])
+                start_time=schedule.get_start_time_display()
+                end_time = schedule.get_end_time_display()
+                time = start_time+'-'+end_time
+                if time == '-':
+                        time=None
+                ddf =pd.DataFrame({date:time},index =[user])
                 df = pd.concat([df,ddf],axis=0)
                 df.fillna(" ", inplace=True)
                 a = 2
@@ -291,23 +293,29 @@ class ShiftWithScheduleMixin(WeekCalendarMixin):
             elif user != schedule.user.last_name+' '+schedule.user.first_name: 
                 user=schedule.user.last_name+' '+schedule.user.first_name
                 date= schedule.date
-                # start_time=schedule.get_start_time_display()
-                # end_time = schedule.get_end_time_display()
-                # time = start_time+'-'+end_time
-                ddf =pd.DataFrame({date:schedule},index =[user])
+
+                start_time=schedule.get_start_time_display()
+                end_time = schedule.get_end_time_display()
+                time = start_time+'-'+end_time
+                if time == '-':
+                        time=None
+                ddf =pd.DataFrame({date:time},index =[user])
                 df = pd.concat([df,ddf],axis=0)
                 df.fillna(" ", inplace=True)
                 
             else:    
                 user=schedule.user.last_name+' '+schedule.user.first_name
                 date= schedule.date
-                # start_time=schedule.get_start_time_display()
-                # end_time = schedule.get_end_time_display()
-                # time = start_time+'-'+end_time
+
+                start_time=schedule.get_start_time_display()
+                end_time = schedule.get_end_time_display()
+                time = start_time+'-'+end_time
+                if time == '-':
+                        time=None
                 
                 # ddf =pd.DataFrame({date:time},index =[user])
                 df[date]= df[date].astype(str)
-                df.at[user,date] =schedule
+                df.at[user,date] =time
                 df.fillna(" ", inplace=True) 
                
         df.fillna(" ", inplace=True)
@@ -351,7 +359,7 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
             '{}__range'.format(self.date_field): (start, end),
                  
         }
-        queryset = self.model.objects.filter(**lookup)
+        queryset = self.model.objects.filter(**lookup).order_by('user__userdata__start_day')
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
         # df.loc["希望人数"]=0
@@ -365,7 +373,12 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
                 if a == 1:
                     user=schedule.user.last_name+' '+schedule.user.first_name
                     date= schedule.date
-                    ddf =pd.DataFrame({date:schedule},index =[user])
+                    start_time=schedule.get_start_time_display()
+                    end_time = schedule.get_end_time_display()
+                    time = start_time+'-'+end_time
+                    if time == '-':
+                        time=None
+                    ddf =pd.DataFrame({date:time},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
                     a = 2
@@ -373,16 +386,27 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
                 elif user != schedule.user.last_name+' '+schedule.user.first_name: 
                     user=schedule.user.last_name+' '+schedule.user.first_name
                     date= schedule.date
-                    ddf =pd.DataFrame({date:schedule},index =[user])
+                    start_time=schedule.get_start_time_display()
+                    end_time = schedule.get_end_time_display()
+                    time = start_time+'-'+end_time
+                    if time == '-':
+                        time=None
+                    ddf =pd.DataFrame({date:time},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
                     
                 else:    
                     user=schedule.user.last_name+' '+schedule.user.first_name
                     date= schedule.date
+                    start_time=schedule.get_start_time_display()
+                    end_time = schedule.get_end_time_display()
+                    time = start_time+'-'+end_time
+                    if time == '-':
+                        time=None
+                    # ddf =pd.DataFrame({date:time},index =[user])
                     df[date]= df[date].astype(str)
-                    df.at[user,date] =schedule
-                    df.fillna(" ", inplace=True) 
+                    df.at[user,date] =time
+                    df.fillna(" ", inplace=True)
             else:
                 pass
                    
@@ -420,11 +444,15 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
         p=[]   
         for need in s:
             p.append(need)
-        print(p)    
         o=[]
         for s,hope_pa in zip(p,df_num):
-            f=hope_pa-s
-            o.append(f)
+            if isinstance(s, int):
+                f=hope_pa-s
+                o.append(f)  
+            else:       
+                s=0
+                f=hope_pa-s
+                o.append(f)
         df.loc["過不足"]=o 
                   
         # for shop_config_day,hope_pa in zip(queryset,df_num):
@@ -447,7 +475,7 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
             calendar_context['week_last'],
             calendar_context['week_days']
         )
-        return calendar_context
+        return calendar_context 
 
 class WeekWithScheduleMixin(WeekCalendarMixin):
     """スケジュール付きの、週間カレンダーを提供するMixin"""
@@ -626,4 +654,165 @@ class Day_configMixin(MonthCalendarMixin):
         )
         calendar_context['month_formset'] = self.month_formset
         
+        return calendar_context
+class Week_CsvMixin(BaseCalendarMixin):
+    """週間カレンダーの機能を提供するMixin"""
+
+    def get_previous_week(self, date):
+        """前月を返す"""
+        if date.month == 1 and date.day ==16:
+            return date.replace(year=date.year-1, month=12,day=16)
+        if date.month == 1 and date.day ==1:
+            return date.replace(year=date.year-1, month=12,day=1)
+
+        if date.day == 16:
+            return date.replace(month =date.month -1 ,day = 16)
+        if date.day == 1:
+            return date.replace(month =date.month -1 ,day = 1)
+
+    def get_week_days(self):
+        """その週の日を全て返す"""
+        month = self.kwargs.get('month')
+        year = self.kwargs.get('year')
+        day = self.kwargs.get('day')
+        if month and year and day:
+            date = datetime.date(year=int(year), month=int(month), day=int(day))
+
+            if date.day < 21 and date.day > 5:
+                dtm = calendar.monthrange(year,month)[1]
+                date = datetime.date(year = int(year),month=int(month),day=int(15))
+                dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
+                return dtlist
+            if date.day < 6:
+                date = datetime.date(year = int(year),month=int(month),day = int(1))
+                dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
+                return dtlist
+
+        else:
+            pass
+        #     date = datetime.date.today()
+        #     year =int(date.year)
+        #     month=int(date.month)
+        #     day=int(date.day)
+        #     if date.day < 21 and date.day > 5:
+        #         dtm = calendar.monthrange(year,month)[1]
+        #         date = datetime.date(year = int(year),month=int(month),day = int(15))
+        #         dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
+
+        #         return dtlist
+        #     if date.day < 6:
+        #         date = datetime.date(year = int(year),month=int(month+1),day = int(1))
+        #         dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
+        #         return dtlist
+            
+
+
+    def name(self):
+        weekname=['月','火','水','木','金','土','日']
+        name=[]
+        week=[]
+        day = self.get_week_days()
+        for l in day:
+            name.append(l.weekday())
+        for nn in name:
+            week.append(weekname[nn])
+        return week
+
+
+    def get_week_calendar(self):
+        """週間カレンダー情報の入った辞書を返す"""
+        self.setup_calendar()
+        days = self.get_week_days()
+        first = days[0]
+        last = days[-1]
+        ago = self.get_previous_week(first)
+        calendar_data = {
+            'now': datetime.date.today(),
+            'week_days': days,
+            'week_previous': ago,
+            'week_next': first ,
+            'week_names': self.name(),
+            'week_first': first,
+            'week_last': last,
+        }
+        return calendar_data        
+
+class CsvMixin(Week_CsvMixin):
+
+    def get_week_schedules(self, start, end, days):
+        
+        # shop = get_object_or_404(Shops, pk=self.kwargs['shops_pk'])
+        shop=self.kwargs['shops_pk']
+        user= User.objects.filter(shops__shop=shop)
+        
+        b =[]
+        for a in user:
+            b.append(a)
+        lookup = {
+            '{}__range'.format(self.date_field): (start, end),
+                 
+        }
+        queryset = self.model.objects.filter(**lookup)
+
+        # -----日付のみ出力
+        dd =[]
+        for dday in days:
+            d =dday.day
+            dd.append(d)
+        # ^^^^^    
+        days = {day: [] for day in dd }   
+        df = pd.DataFrame(days)
+        
+        a=1
+        for schedule in queryset:
+            
+            if schedule.user in b:
+                if a == 1:
+                    user=schedule.user.last_name+' '+schedule.user.first_name
+                    date= schedule.date
+                    date=date.day
+                    start_time=schedule.get_start_time_display()
+                    end_time = schedule.get_end_time_display()
+                    time = start_time+'-'+end_time
+                    ddf =pd.DataFrame({date:time},index =[user])
+                    df = pd.concat([df,ddf],axis=0)
+                    df.fillna(" ", inplace=True)
+                    a = 2
+                    
+                if user != schedule.user.last_name+' '+schedule.user.first_name: 
+                    user=schedule.user.last_name+' '+schedule.user.first_name
+                    date= schedule.date
+                    date=date.day
+                    start_time=schedule.get_start_time_display()
+                    end_time = schedule.get_end_time_display()
+                    time = start_time+'-'+end_time
+                    ddf =pd.DataFrame({date:time},index =[user])
+                    df = pd.concat([df,ddf],axis=0)
+                    df.fillna(" ", inplace=True)
+                    
+                else:    
+                    user=schedule.user.last_name+' '+schedule.user.first_name
+                    date= schedule.date
+                    date=date.day
+                    start_time=schedule.get_start_time_display()
+                    end_time = schedule.get_end_time_display()
+                    time = start_time+'-'+end_time
+                    ddf =pd.DataFrame({date:time},index =[user])
+                    df[date]= df[date].astype(str)
+                    df.at[user,date] =time
+                    df.fillna(" ", inplace=True) 
+        # csv保存-------------------        
+        df.fillna(" ", inplace=True)
+
+        return df
+      
+
+    def get_week_calendar(self):
+        calendar_context = super().get_week_calendar()
+        calendar_context['df'] = self.get_week_schedules(
+            calendar_context['week_first'],
+            calendar_context['week_last'],
+            calendar_context['week_days']
+        )
+
         return calendar_context

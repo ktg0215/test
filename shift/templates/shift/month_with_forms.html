@@ -6,10 +6,10 @@
         } */
         
     </style>
-
-    <!-- <a href="{% url 'shift:month_with_forms' user.pk month_previous.year month_previous.month month_previous.day %}">前月</a>
+<h3></h3>
+    <a href="{% url 'shift:month_with_forms' user.pk month_previous.year month_previous.month month_previous.day %}">前月</a>
     {{ month_current | date:"Y年m月" }}
-    <a href="{% url 'shift:month_with_forms' user.pk month_next.year month_next.month month_previous.day %}">次月</a> -->
+    <a href="{% url 'shift:month_with_forms' user.pk month_next.year month_next.month month_previous.day %}">次月</a>
 
     <form action="" method="POST">
         {{ month_formset.management_form }}{% for week_day_forms in month_day_forms %}

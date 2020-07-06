@@ -1,28 +1,41 @@
 {% extends "register/base.html" %}
-{% block content %}
 {% load math_tags %}
+{% block content %}
+
 <!-- Large button groups (default and split) -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-link" href="{% url 'register:user_list' %}">全店</a>
+ 
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            {% for s in bshop %}
+            <a class="nav-item nav-link" href="{% url 'register:shop_list' s.shop %}">{{s.get_shop_display}}店</a>
+            {% endfor %}
+          </div>
+      </div>
+</nav>
+<table class="table table-sm">
+        <thead>
+          <tr>
+                <th>店舗名</th>
+                <th>名前</th>
+                <th>年齢</th>
+                <th>誕生日</th>
+                <th>入店日</th>
+          </tr>
+        </thead>
+        <tbody>
+                {% for user in shops %}
+                <tr>
+                <td>{{user.shops.get_shop_display}}店</td>
+                <td>{{ user.last_name }}&nbsp;{{user.first_name}}</td>
+                <td>{{user.userdata.date_of_birth|age}}</td> 
+                <td>{{user.userdata.date_of_birth}}</td>
+                <td>{{user.userdata.start_day }}  </td>
+                {{ user.schedule }}
+                </tr>{% endfor %}
 
-        <a href="{% url 'register:user_list' %}" >全店</a>
-        <a href="{% url 'register:shop_list' 1 %}" >目黒</a>
-        <a href="{% url 'register:shop_list' 2 %}">上野広小路</a>
-        <a href="{% url 'register:shop_list' 5 %}">神保町</a>
-        <a href="{% url 'register:shop_list' 9 %}">北千住</a><br>
-    
+        </tbody>
+      </table>
 
-  
-
-
-
-<tr>
-
-
-{% for user in user_list %}
-<td>店番号{{ user.shops }}個人ID{{ user.id }}{{user.shops.get_shop_display}}店</td>
-<td>{{ user.last_name }}&nbsp;{{user.first_name}}</td>
-<td>誕生日:{{user.userdata.date_of_birth}}[{{user.userdata.date_of_birth|age}}]  </td>
-<td>入店日:{{user.userdata.start_day }}  </td><hr>
-{{ user.schedule }}
-</tr>
-{% endfor %}
 {% endblock %}

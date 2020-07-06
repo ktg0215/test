@@ -37,8 +37,8 @@ class Schedule(models.Model):
     shops = models.ForeignKey(Shops, verbose_name='店舗', on_delete=models.CASCADE,blank=True)
 
 
-    def __int__(self):
-        return self.date
+    def __str__(self):
+        return f"{self.user.last_name} {self.date}{self.start_time}"
 
 class Shop_config(models.Model):
     shops = models.OneToOneField(Shops,on_delete=models.CASCADE)

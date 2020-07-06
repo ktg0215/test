@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap4', #追加
+    'widget_tweaks', #追加
 ]
 
 MIDDLEWARE = [
@@ -66,6 +68,11 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'builtins':[ 
+
+                'bootstrap4.templatetags.bootstrap4',
+
+            ],#追加
         },
     },
 ]
@@ -131,3 +138,10 @@ LOGIN_URL = 'register:login'
 LOGIN_REDIRECT_URL = 'register:top'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+    # デプロイ後↓エラー出たら消そう　bootstarp関連
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')

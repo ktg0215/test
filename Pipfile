@@ -9,6 +9,10 @@ verify_ssl = true
 django = "*"
 django-pandas = "*"
 numpy = "*"
+django-bootstrap4 = "*"
+django-widgets-improved = "*"
+django-widget-tweaks = "*"
+whitenoise = "*"
 
 [requires]
 python_version = "3.7"

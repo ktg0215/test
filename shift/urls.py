@@ -17,6 +17,8 @@ urlpatterns = [
     ),
     path('shop_config/',views.Shop_base_views.as_view(),name='shop_config'),
     path('shop_config/<int:shops_pk>/',views.Shop_base_views.as_view(),name='shop_config'),
+    path('shift_csv/<int:shops_pk>/<int:year>/<int:month>/<int:day>/', views.Shift_csv.as_view(), name='shift_csv'),
+    path('shift_csv/<int:shops_pk>/', views.Shift_csv.as_view(), name='shift_csv'),    
     # path('shop_config/',views.Shop_baseupdate_views.as_view(),name='shop_config'),
     # path('shop_config/<int:pk>/',views.Shop_baseupdate_views.as_view(),name='shop_config'),
 

@@ -215,3 +215,35 @@ class Shop_config_day_views(mixins.Day_configMixin, generic.View):
 
 
 
+# from django.shortcuts import render
+
+# from django.shortcuts import render
+# from bs4 import BeautifulSoup
+# import urllib.request
+# import datetime
+# import re
+
+# def index(request):
+#     url = "https://tenki.jp/forecast/3/16/4410/13109/"
+#     response = urllib.request.urlopen(url)
+#     html = response.read()
+#     soup = BeautifulSoup(html)
+#     cc=[]
+#     dates=[tag.text for tag in soup(class_='date-box')]
+#     for a in dates:
+#         atime=datetime.datetime.strptime(a,'%m月%d日')
+#         date = datetime.date(2020,atime.month,atime.day)
+#         cc.append(date)
+#     tds=[tag for tag in soup('td',class_='weather-icon')]
+#     imgs=[]
+#     for b in soup.find_all('td',class_='weather-icon'):
+#         for a in b.find_all('img',src=re.compile('^https://static.tenki.jp/images/icon/forecast-days-weather/')):
+#             imgs.append(a.get("src"))
+#     # テンプレートに渡すデータを格納 
+#     context = {
+#         'days': cc,
+#         'weather':imgs,
+#     }
+
+#     return render(request, 'tenki/index.html', context)  
+

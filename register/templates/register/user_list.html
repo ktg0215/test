@@ -17,11 +17,12 @@
 <table class="table table-sm">
         <thead>
           <tr>
-                <th>店舗名</th>
-                <th>名前</th>
-                <th>年齢</th>
-                <th>誕生日</th>
-                <th>入店日</th>
+                <th>Shop</th>
+                <th>Position</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Birth</th>
+                <th>Start</th>
           </tr>
         </thead>
         <tbody>
@@ -29,6 +30,7 @@
                 {% for user in shops %}
                 <tr>
                 <td>{{user.shops.get_shop_display}}店</td>
+                <td>{{ user.userdata.get_position_display}}</td>
                 <td>{{ user.last_name }}&nbsp;{{user.first_name}}</td>
                 <td>{{user.userdata.date_of_birth|age}}</td> 
                 <td>{{user.userdata.date_of_birth}}</td>

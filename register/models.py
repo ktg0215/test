@@ -102,11 +102,18 @@ class Shops(models.Model):
         return self.get_shop_display()
 
 class UserData(models.Model):
+    Position_CHOICES = (
+    ('3', 'デリ'),
+    ('6', 'メイク'),
+    ('2', 'デリ/メイク'),
+    ('1', '代行'),
+    ('4', '自転車'),
+    ('5', '車'),
+    )
+    position =models.CharField('ポジション',max_length=5,choices=Position_CHOICES, blank=True)
     date_of_birth = models.DateField("生年月日",blank=True,default=datetime(1999, 1, 1))
     start_day = models.DateField("入店日",blank=True,default=datetime(1999, 1, 1))
     user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-    def __str__(self):
-        return f"{self.user.last_name} {self.start_day}"
     
     @property
     def age(self):

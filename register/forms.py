@@ -67,7 +67,7 @@ class ShopsForm(forms.ModelForm):
 class UserDataForm(forms.ModelForm):
     class Meta:
         model = UserData
-        fields =("date_of_birth","start_day",
+        fields =("date_of_birth","start_day","position"
         )        
         widgets = {
             'date_of_birth': forms.SelectDateWidget(years=[x for x in range(1970, 2005)]),

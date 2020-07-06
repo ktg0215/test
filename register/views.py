@@ -31,7 +31,7 @@ class Userlist(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['shops']=User.objects.all()
+        context['shops']=User.objects.all().order_by('userdata__position')
         bb=Shops.objects.all().order_by('shop')
         c=[]
         h=[]
@@ -57,7 +57,7 @@ class Shoplist(generic.ListView):
         context = super().get_context_data(**kwargs)
         # context['shop'] = self.shop
         shop =self.kwargs['pk']
-        context['shops']= User.objects.filter(shops__shop=shop)
+        context['shops']= User.objects.filter(shops__shop=shop).order_by('userdata__position')
         bb=Shops.objects.all().order_by('shop')
         c=[]
         h=[]
@@ -72,10 +72,6 @@ class Shoplist(generic.ListView):
         
         return context
 
-    # def get_queryset(self):
-    #     shop = self.shop = get_object_or_404(Shops, pk=self.kwargs['pk'])
-    #     queryset = super().get_queryset().filter(shops__shop=shop)
-    #     return queryset
 
 class Top(generic.TemplateView):
     template_name = 'register/top.html'

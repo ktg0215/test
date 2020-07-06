@@ -9,6 +9,10 @@ import pandas as pd
 import numpy as np
 from .models import Schedule,Shop_config_day,Shop_config
 from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import render
+from bs4 import BeautifulSoup
+import urllib.request
+import re
 
 
 class BaseCalendarMixin:
@@ -123,6 +127,7 @@ class ShiftWithScheduleMixin(PizzaMixin):
             df_num.append(b)
 
         df.loc["希望人数"]=df_num
+         
 
         return df
 
@@ -153,9 +158,10 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
         queryset = self.model.objects.filter(**lookup).order_by('user__userdata__start_day')
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
-        # df.loc["希望人数"]=0
+        df.loc["天気"]=None
         df.loc["必要人数"]=0
         df.loc["過不足"]=0
+        
 
 
         a=1
@@ -167,6 +173,8 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
                     start_time=schedule.get_start_time_display()
                     end_time = schedule.get_end_time_display()
                     time = start_time+'-'+end_time
+                    if time =='-':
+                        time=None
                     ddf =pd.DataFrame({date:time},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
@@ -179,6 +187,8 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
                     start_time=schedule.get_start_time_display()
                     end_time = schedule.get_end_time_display()
                     time = start_time+'-'+end_time
+                    if time =='-':
+                        time=None
                     ddf =pd.DataFrame({date:time},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
@@ -190,6 +200,8 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
                     start_time=schedule.get_start_time_display()
                     end_time = schedule.get_end_time_display()
                     time = start_time+'-'+end_time
+                    if time =='-':
+                        time=None
                     
                     # ddf =pd.DataFrame({date:time},index =[user])
                     df[date]= df[date].astype(str)
@@ -242,18 +254,33 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
                 f=hope_pa-s
                 o.append(f)
         df.loc["過不足"]=o 
-                  
-        # for shop_config_day,hope_pa in zip(queryset,df_num):
-        #     # print(shop_config_day.day_need)
-        #     if shop[0] == shop_config_day.shops:
-        #         date = shop_config_day.date
-        #         need = shop_config_day.day_need
-        #         hope = hope_pa -need
-        #         # print(hope_pa,need,"あ",hope,date)
-        #         df.at["過不足",date] =hope
-        #         df.fillna(" ", inplace=True)
-        #     else:
-        #         pass        
+
+        # 天気ーーーーーーーーーーー
+        url = "https://tenki.jp/forecast/3/16/4410/13109/"
+        response = urllib.request.urlopen(url)
+        html = response.read()
+        soup = BeautifulSoup(html)
+        cc=[]
+        # ↑日
+        dates=[tag.text for tag in soup(class_='date-box')]
+        for a in dates:
+            atime=datetime.datetime.strptime(a,'%m月%d日')
+            date = datetime.date(2020,atime.month,atime.day)
+            cc.append(date)
+        tds=[tag for tag in soup('td',class_='weather-icon')]
+        imgs=[]
+        #↑画像
+        for b in soup.find_all('td',class_='weather-icon'):
+            for a in b.find_all('img',src=re.compile('^https://static.tenki.jp/images/icon/forecast-days-weather/')):
+                imgs.append(a.get("src"))
+            
+        for (d,tenki) in zip(cc,imgs):
+            if d in days:
+
+                df.at['天気',d] =str(tenki)
+                df.fillna(" ", inplace=True)
+            
+             
         return df
 
     def get_week_calendar(self):
@@ -468,34 +495,6 @@ class Week_CsvMixin(BaseCalendarMixin):
         for week in self._calendar.monthdatescalendar(date.year, date.month):
             if date in week:  # 週ごとに取り出され、中身は全てdatetime.date型。該当の日が含まれていれば、それが今回表示すべき週です
                 return week
-
-            # if date.day < 21 and date.day > 5:
-            #     dtm = calendar.monthrange(year,month)[1]
-            #     date = datetime.date(year = int(year),month=int(month),day=int(15))
-            #     dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-            #     return dtlist
-            # if date.day < 6:
-            #     date = datetime.date(year = int(year),month=int(month),day = int(1))
-            #     dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
-            #     return dtlist
-
-        # else:
-        #     pass
-        #     date = datetime.date.today()
-        #     year =int(date.year)
-        #     month=int(date.month)
-        #     day=int(date.day)
-        #     if date.day < 21 and date.day > 5:
-        #         dtm = calendar.monthrange(year,month)[1]
-        #         date = datetime.date(year = int(year),month=int(month),day = int(15))
-        #         dtlist = [date + datetime.timedelta(days =day) for day in range(1,dtm-14)]
-
-        #         return dtlist
-        #     if date.day < 6:
-        #         date = datetime.date(year = int(year),month=int(month+1),day = int(1))
-        #         dtlist = [date + datetime.timedelta(days =day) for day in range(0,15)]
-        #         return dtlist
-            
 
 
     def name(self):

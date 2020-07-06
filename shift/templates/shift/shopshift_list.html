@@ -57,7 +57,22 @@
                {% endif %} {% endfor %}
 
 {% for index,row in df.iterrows %}
-{% if index == "希望人数" %}
+{% if index == "天気" %}
+<tr>
+<th>{{index}}</th>
+  {% if row.0 == None %}
+  {%else%}
+<td><img src='{{ row.0 }}'></td>
+{%endif%}
+<td><img src='{{row.1}}'></td>
+<td><img src='{{row.2}}'></td>
+<td><img src='{{row.3}}'></td>
+<td><img src='{{row.4}}'></td>
+<td><img src='{{row.5}}'></td>
+<td><img src='{{row.6}}'></td>
+</tr>
+
+{% elif index == "希望人数" %}
 
 <tr>    
     <th bgcolor="#EEEEEE">{{index}}</th>

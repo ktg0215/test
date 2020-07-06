@@ -52,7 +52,6 @@ class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
         # shop =self.kwargs['shops_pk']
         # context['shops']= User.objects.filter(shops__shop=shop)
         bb=Shops.objects.all().order_by('shop')
-        print(bb)
         c=[]
         h=[]
         b= 0
@@ -62,7 +61,6 @@ class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
             else:
                 c.append(a)
                 h.append(a.shop)
-        print(c)
         context['bshop']=c
         context['shopnum']=self.kwargs['shops_pk']
         

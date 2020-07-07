@@ -112,7 +112,7 @@ class UserData(models.Model):
     )
     position =models.CharField('ポジション',max_length=5,choices=Position_CHOICES, blank=True)
     date_of_birth = models.DateField("生年月日",blank=True,default=datetime(1999, 1, 1))
-    start_day = models.DateField("入店日",blank=True,default=datetime(1999, 1, 1))
+    start_day = models.DateField("入店日",blank=True,default=datetime(2010, 1, 1))
     user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     
     @property

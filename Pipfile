@@ -10,6 +10,9 @@ django = "*"
 django-pandas = "*"
 numpy = "*"
 beautifulsoup4 = "*"
+django-bootstrap4 = "*"
+whitenoise = "*"
+django-widget-tweaks = "*"
 
 [requires]
 python_version = "3.7"

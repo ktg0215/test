@@ -1,74 +1,90 @@
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% load widget_tweaks %}
+
+
 <head>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<head>
+ 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> 
+    </head> 
 
   {% block content %}
-  <div class = "common-form">
+  <div class="container">
+  <h2>SignUP</h2>
+  <div class="jumbotron"> 
   <form action="" method="POST">
-    <div class="form-group">
+    
       {{ form.non_field_errors }}
-        <div id ="tata"><ul>
-          {{ form.non_field_errors }}
-          <table>
-            <th width="15%"></th>
-            <th></th>
-            <h2>Sign Up</h2>
-            <th></th>
-            
-            <tr>
-                <td >{{shop_form.shop.label_tag}}</td>
-                <td>{{shop_form.shop}}</td>
-            </tr>
-            <tr>
-              <td >a:{{userdata_form.position.label_tag}}</td>
-              <td>{{userdata_form.position}}</td>
-          </tr>            
-            <tr>
-              <td><p>入店日:</p></td>
-              <td >{{ userdata_form.start_day }}</td>
-            </tr>             
-            <tr>
-                <td >{{ user_form.email.label_tag}}</td>
-                <td>{{ user_form.email}}</td>
-                
-                
-            </tr>
-            {% if user_form.email.errors  == None %}
-            
-            {% else %}
-            <td></td>
-            <td>{{user_form.email.errors}}</td>
-            {% endif %}
-            <tr>
-                <td><p>名　　　前:</p></td>
-                <td>{{ user_form.last_name }}</td>
-                <td>{{ user_form.first_name }}</td>
-            </tr>
-            <tr>
-              <td><p>生年月日:</p></td>
-              <td >{{ userdata_form.date_of_birth }}</td>
-            </tr>
- 
-            <tr>
-                <td >{{ user_form.password1.label_tag}}</td>
-                <td>{{ user_form.password1}}</td>
-            </tr>
-            <tr>
-                <td>{{ user_form.password2.label_tag}}</td>
-                <td>{{ user_form.password2}}</td>
-            </tr>
+       
+       
   
-          </table>
-          {{ field.errors }}
-          {% csrf_token %}
-      </div>
-  
-      {% csrf_token %}
-      <button  type="submit" class = "submit" class="btn btn-primary btn-lg">送信</button>
-  
-  </form>
+  <div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">Shop</span>
   </div>
+   <div  aria-describedby="basic-addon">{{ shop_form.shop|add_class:'form-control'}}
+  </div></div>
+
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text" id="basic-addon1">Position</span>
+    </div><div  aria-describedby="basic-addon">{{userdata_form.position|add_class:'form-control'}}
+    </div></div>
+
+ <div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">LastName</span>
+  </div><div  aria-describedby="basic-addon">{{ user_form.last_name|add_class:'form-control'}}
+  </div></div>
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text" id="basic-addon1">FirstName</span>
+    </div><div  aria-describedby="basic-addon">{{ user_form.first_name|add_class:'form-control'}}
+    </div></div>
+ 
+
+  <div class="input-group mb-3">
+  <div class="input-group-prepend">
+  <span class="input-group-text" id="basic-addon1">BirthDay</span>
+</div><div  aria-describedby="basic-addon">{{ userdata_form.date_of_birth|add_class:'form-control'}}
+</div></div>
+
+<div class="input-group mb-3">
+<div class="input-group-prepend">
+  <span class="input-group-text" id="basic-addon1">StartDay</span>
+</div><div  aria-describedby="basic-addon">{{ userdata_form.start_day|add_class:'form-control'}}
+</div>   </div>
+ <p></p>
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">Email</span>
+  </div><div  aria-describedby="basic-addon3">{{ user_form.email|add_class:'form-control'}}
+</div></div>
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">PassWord</span>
+  </div><div  aria-describedby="basic-addon">{{ user_form.password1|add_class:'form-control'}}
+</div></div>
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1">PassWordConfirmation
+    </span>
+  </div><div  aria-describedby="basic-addon">{{ user_form.password2|add_class:'form-control'}}
+</div></div>
+
+{{ field.errors }}
+<hr class="my-4">
+{% csrf_token %}
+<button  type="submit"  class="btn btn-outline-primary">送信</button>
+</form>
+</div></div>
+
+
+
   {% endblock %}

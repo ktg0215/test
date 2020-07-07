@@ -71,7 +71,7 @@ class UserDataForm(forms.ModelForm):
         )        
         widgets = {
             'date_of_birth': forms.SelectDateWidget(years=[x for x in range(1970, 2005)]),
-            'start_day': forms.SelectDateWidget(years=[x for x in range(2020, 2020)]),
+            'start_day': forms.SelectDateWidget(years=[x for x in range(2010, 2020)]),
         }
 
 #

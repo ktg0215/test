@@ -145,8 +145,10 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
     def get_week_schedules(self, start, end, days):
         
         shop = self.kwargs['shops_pk']
+        bet=shop
         user= User.objects.filter(shops__shop=shop)
         q =Shop_config.objects.filter(shops__shop=shop)
+        print(shop)
     
         b =[]
         for a in user:
@@ -159,6 +161,7 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
         df.loc["天気"]=None
+        df.loc["降水確率"]=None
         df.loc["必要人数"]=0
         df.loc["過不足"]=0
         
@@ -256,7 +259,26 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
         df.loc["過不足"]=o 
 
         # 天気ーーーーーーーーーーー
-        url = "https://tenki.jp/forecast/3/16/4410/13109/"
+        if bet==1:
+            # 八潮↓
+            url="https://tenki.jp/forecast/3/14/4310/11234/"
+        elif bet==4:
+            # 竹の塚↓
+            url="https://tenki.jp/forecast/3/16/4410/13121/"
+        elif bet==3:
+            # 三郷↓
+            url="https://tenki.jp/forecast/3/14/4310/11237/"
+        elif bet==2:
+            # 東川口↓
+            url="https://tenki.jp/forecast/3/14/4310/11203/"
+        elif bet==5:
+            # 山室↓
+            url="https://tenki.jp/forecast/4/19/5510/16201/"
+        elif bet==6:
+            # 奥田↓
+            url="https://tenki.jp/forecast/4/19/5510/16201/"
+
+
         response = urllib.request.urlopen(url)
         html = response.read()
         soup = BeautifulSoup(html)
@@ -273,11 +295,15 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
         for b in soup.find_all('td',class_='weather-icon'):
             for a in b.find_all('img',src=re.compile('^https://static.tenki.jp/images/icon/forecast-days-weather/')):
                 imgs.append(a.get("src"))
+        ames=[]        
+        for ame in soup.find_all(class_='precip'):
+            ames.append(ame.text)
             
-        for (d,tenki) in zip(cc,imgs):
+        for (d,tenki,ame) in zip(cc,imgs,ames):
             if d in days:
 
                 df.at['天気',d] =str(tenki)
+                df.at['降水確率',d] =str(ame)
                 df.fillna(" ", inplace=True)
             
              

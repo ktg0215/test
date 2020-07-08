@@ -41,7 +41,19 @@ class SimpleScheduleForm(forms.ModelForm):
             'date': forms.HiddenInput,
             'shop':forms.HiddenInput,
         }
+class MasterForm(forms.ModelForm):
+    """シンプルなスケジュール登録用フォーム"""
 
+    class Meta:
+        model = Schedule
+        fields = ('start_at', 'end_at', 'date')
+        widgets = {
+            # 'summary': forms.TextInput(attrs={
+                # 'class': 'form-control',
+            # }),
+            'date': forms.HiddenInput,
+            'shop':forms.HiddenInput,
+        }
 class Shop_base_configForm(forms.ModelForm):
     class Meta:
         model = Shop_config

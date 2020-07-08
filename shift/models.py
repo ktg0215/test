@@ -33,6 +33,8 @@ class Schedule(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='ユーザー', on_delete=models.SET_NULL, blank=True, null=True,related_name = "user_schedule")
     start_time = models.CharField('開始時間', choices= SUB_START, max_length=50,blank=True,default="0")
     end_time = models.CharField('終了時間', choices= SUB_END, max_length=50,blank=True,default="0")
+    start_at = models.CharField('入', choices= SUB_START, max_length=50)
+    end_at = models.CharField('出', choices= SUB_END, max_length=50)
     date = models.DateField('日付')
     shops = models.ForeignKey(Shops, verbose_name='店舗', on_delete=models.CASCADE,blank=True)
 

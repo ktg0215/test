@@ -483,12 +483,11 @@ class MasterMixin(MonthCalendarMixin):
         """それぞれの日と紐づくフォームを作成する"""
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
-            'shops__pk': self.kwargs.get('shop_pk'),
+            # 'shops__pk': self.kwargs.get('shop_pk'),
             
         }
         queryset = self.model.objects.filter(**lookup)
-        print(type(queryset))
-
+        
 
         days_count = len(days)
         FormClass = forms.modelformset_factory(self.model, self.form_class, extra=days_count,max_num=days_count)
@@ -499,12 +498,13 @@ class MasterMixin(MonthCalendarMixin):
             formset = self.month_formset = FormClass(queryset=queryset)
         dates =[]
         # ↓新しいフォームが作成されないようにデータのある日付を一回消してる
+        print(len(formset.initial_forms),4844984984)
         for bound_form in formset.initial_forms:
-            print(bound_form,1111111111111)
             instance = bound_form.instance
             date = getattr(instance, self.date_field)
             dates.append(date)
-            days.remove(date)
+            if date in days:
+                days.remove(date)
         day_forms = {day: [] for day in days }
         # ↓初回作成用【2回目以降は多分通らない】
         for empty_form, (date, empty_list) in zip(formset.extra_forms, day_forms.items()):
@@ -798,7 +798,6 @@ class MonthWithFormsMixin(MonthCalendarMixin):
             
         }
         queryset = self.model.objects.filter(**lookup)
-        print(type(queryset))
 
 
         days_count = len(days)

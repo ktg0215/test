@@ -52,7 +52,6 @@ class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
         # shop =self.kwargs['shops_pk']
         # context['shops']= User.objects.filter(shops__shop=shop)
         bb=Shops.objects.all().order_by('shop')
-        print(bb)
         c=[]
         h=[]
         b= 0
@@ -62,7 +61,6 @@ class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
             else:
                 c.append(a)
                 h.append(a.shop)
-        print(c)
         context['bshop']=c
         context['shopnum']=self.kwargs['shops_pk']
         
@@ -186,6 +184,43 @@ class MonthWithFormsCalendar(mixins.MonthWithFormsMixin, generic.View):
             return redirect('shift:week_with_schedule', user_pk=user_pk)
 
         return render(request, self.template_name, context)
+class Master(mixins.MasterMixin, generic.View):
+    """フォーム付きの月間カレンダーを表示するビュー"""
+    template_name = 'shift/month_with_forms.html'
+    model = Schedule
+    date_field = 'date'
+    form_class = SimpleScheduleForm
+
+    def get(self, request, **kwargs):
+
+        context = self.get_month_calendar()
+        context['shop'] = get_object_or_404(User, pk=self.kwargs['shop_pk'])
+
+        return render(request, self.template_name, context)
+    
+
+    def post(self, request, **kwargs):
+
+        context = self.get_month_calendar()
+        user_pk = self.kwargs['user_pk']
+        user = get_object_or_404(User, pk=user_pk)
+        context['user'] = user
+        shops = user.shops
+        formset = context['month_formset']
+        if formset.is_valid():
+
+            instances = formset.save(commit=False)
+            for schedule in instances:
+                schedule.user = user
+                user.schedule = schedule
+                shops.schedule = schedule
+                schedule.shops = user.shops
+                schedule.save()
+                shops.save()
+                user.save()
+            return redirect('shift:week_with_schedule', user_pk=user_pk)
+
+        return render(request, self.template_name, context)        
 
 class Shop_base_views(generic.CreateView):
     model = Shop_config

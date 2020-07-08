@@ -24,6 +24,15 @@ urlpatterns = [
 
     # path('shop_config/<int:pk>/',views.Shop_config_list.as_view(),name='shop_config_list'),
     path(
+        'a/<int:shop_pk>/master/',
+        views.Master.as_view(), name='master'
+    ),
+    path(
+        'a/<int:shop_pk>/master/<int:year>/<int:month>/',
+        views.Master.as_view(), name='master'
+    ),
+
+    path(
         'user/<int:user_pk>/month_with_schedule/',
         views.MonthWithScheduleCalendar.as_view(), name='month_with_schedule'
     ),

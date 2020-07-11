@@ -1,41 +1,71 @@
 {% extends "register/base.html" %}
 {% block content %}
-    <style>
-        /* table {
-            table-layout: fixed;
-        } */
+
+
+{% load static %}
+
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" /> -->
+
+
+<style>
+.mgr-10{
+    margin-right : 100px;
+}
+    
+</style>
+
+<table class="table table-bordered"　>
+
+    <div class="container">
+        <div class="row">
+         
         
-    </style>
-<h3></h3>
 
     <form action="" method="POST">
-        {{ month_formset.management_form }}{% for week_day_forms in month_day_forms %}
-        <table class="table">{% for day, forms in week_day_forms.items %}
-            
-                <tr> <td>{{ day | date:"n" }}月{{day |date:"j"}}日 
-                    {% if day|date:"D" == "日" %}
-                    <small>
-                        <span style="color: #F00;">({{ day | date:"D" }})</span>
-                    </small></td>
-                    {% elif day|date:"D" == "土" %}
-                    <small>
-                        <span style="color:#0000FF">({{ day | date:"D" }})</span>
-                    </small></td>
-                    {% else %}
-                    <small>
-                    ({{ day|date:"D" }})
-                </small></td>
-                   {% endif %}
-                   {% for form in forms %}
-                   
-                    <td>{{form.date}}{{form.id}}start{{form.start_time}}end{{form.end_time}}
-                    </td></tr>
-                    {% endfor %}{% endfor %}
-                
-            {% endfor %}
-            </tbody>
-        </table>
-        {% csrf_token %}
-        <button type="submit" class="btn btn-primary">送信</button>
-    </form>
+        {{ month_formset.management_form }}
+       
+
+  <tr> <th class="col-1">User</th></div>
+  {% for day in month_day_forms %}
+  
+  <th class="col-1">{{day | date:"n"}}月{{day | date:"j" }}日 </th> 
+ {%endfor%}</tr>
+
+ <tr>
+    
+{% for index,a in month_day_forms.iterrows %}
+<div class="row">
+<th class="col-1">{{index}}</th>
+<td class="col-1">{{a.0.start_at}}<br>{{a.0.end_at}}</td>
+<td class="col-1">{{a.1.start_at}}<br>{{a.1.end_at}}</td>
+<td class="col-1">{{a.2.start_at}}<br>{{a.2.end_at}}</td>
+
+<td class="col-1">{{a.3.start_at}}<br>{{a.3.end_at}}</td>
+<td class="col-1">{{a.4.start_at}}<br>{{a.4.end_at}}</td>
+<td class="col-1">{{a.5.start_at}}<br>{{a.5.end_at}}</td>
+<td class="col-1">{{a.6.start_at}}<br>{{a.6.end_at}}</td>
+<td class="col-1">{{a.7.start_at}}<br>{{a.7.end_at}}</td>
+<td class="col-1">{{a.8.start_at}}<br>{{a.8.end_at}}</td>
+<td class="col-1">{{a.9.start_at}}<br>{{a.9.end_at}}</td>
+<td class="col-1">{{a.10.start_at}}<br>{{a.10.end_at}}</td>
+<td class="col-1">{{a.11.start_at}}<br>{{a.11.end_at}}</td>
+<td class="col-1">{{a.12.start_at}}<br>{{a.12.end_at}}</td>
+<td class="col-1">{{a.13.start_at}}<br>{{a.13.end_at}}</td>
+<td class="col-1">{{a.14.start_at}}<br>{{a.14.end_at}}</td>
+</div>
+{% if a.15.start_at == None %}
+
+
+{% else %}
+<div class="col"></div><td>{{a.15.start_at}}<br>{{a.15.end_at}}</td>
+{%endif%}
+</tr>
+    
+    {%endfor%}
+</table>
+{% csrf_token %}
+<button type="submit" class="btn btn-primary">送信</button>
+</form>
+
+
 {% endblock %}

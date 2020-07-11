@@ -46,11 +46,12 @@ class MasterForm(forms.ModelForm):
 
     class Meta:
         model = Schedule
-        fields = ('start_at', 'end_at', 'date')
+        fields = ('start_at', 'end_at', 'date',)
         widgets = {
             # 'summary': forms.TextInput(attrs={
                 # 'class': 'form-control',
             # }),
+            'user':forms.HiddenInput,
             'date': forms.HiddenInput,
             'shop':forms.HiddenInput,
         }

@@ -2,7 +2,7 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import generic
-from .forms import BS4ScheduleForm, SimpleScheduleForm, Shop_base_configForm, Shop_config_dayForm
+from .forms import BS4ScheduleForm, SimpleScheduleForm, Shop_base_configForm, Shop_config_dayForm,MasterForm
 from .models import Schedule,Shop_config,Shop_config_day
 from . import mixins
 from .models import User
@@ -165,16 +165,19 @@ class MonthWithFormsCalendar(mixins.MonthWithFormsMixin, generic.View):
     def post(self, request, **kwargs):
 
         context = self.get_month_calendar()
-        user_pk = self.kwargs['user_pk']
+        # user_pk = self.kwargs['user_pk']
         user = get_object_or_404(User, pk=user_pk)
         context['user'] = user
         shops = user.shops
         formset = context['month_formset']
+
         if formset.is_valid():
 
             instances = formset.save(commit=False)
             for schedule in instances:
                 schedule.user = user
+                schedule.end_at=schedule.end_time
+                schedule.start_at=schedule.start_time
                 user.schedule = schedule
                 shops.schedule = schedule
                 schedule.shops = user.shops
@@ -186,10 +189,10 @@ class MonthWithFormsCalendar(mixins.MonthWithFormsMixin, generic.View):
         return render(request, self.template_name, context)
 class Master(mixins.MasterMixin, generic.View):
     """フォーム付きの月間カレンダーを表示するビュー"""
-    template_name = 'shift/month_with_forms.html'
+    template_name = 'shift/master.html'
     model = Schedule
     date_field = 'date'
-    form_class = SimpleScheduleForm
+    form_class = MasterForm
 
     def get(self, request, **kwargs):
 

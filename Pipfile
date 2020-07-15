@@ -13,6 +13,7 @@ django-bootstrap4 = "*"
 django-widgets-improved = "*"
 django-widget-tweaks = "*"
 whitenoise = "*"
+django-crispy-forms = "*"
 
 [requires]
 python_version = "3.7"

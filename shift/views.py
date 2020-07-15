@@ -108,8 +108,8 @@ class MonthWithScheduleCalendar(mixins.MonthWithScheduleMixin, generic.TemplateV
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user'] = get_object_or_404(User, pk=self.kwargs['user_pk'])
-        calendar_context = self.get_month_calendar()
+        context['shop'] =self.kwargs['shop_pk']
+        calendar_context = self.get_week_calendar()
         context.update(calendar_context)
         return context
 
@@ -165,16 +165,20 @@ class MonthWithFormsCalendar(mixins.MonthWithFormsMixin, generic.View):
     def post(self, request, **kwargs):
 
         context = self.get_month_calendar()
-        # user_pk = self.kwargs['user_pk']
+        user_pk = self.kwargs['user_pk']
         user = get_object_or_404(User, pk=user_pk)
         context['user'] = user
         shops = user.shops
         formset = context['month_formset']
-
+        print(formset)
         if formset.is_valid():
 
             instances = formset.save(commit=False)
             for schedule in instances:
+                # if schedule.start_time == '':
+                #     schedule.start_time =='0'
+                # if schedule.end_time == '':
+                #     schedule.end_time =='0'
                 schedule.user = user
                 schedule.end_at=schedule.end_time
                 schedule.start_at=schedule.start_time
@@ -198,32 +202,34 @@ class Master(mixins.MasterMixin, generic.View):
 
         context = self.get_month_calendar()
         context['shop'] = get_object_or_404(User, pk=self.kwargs['shop_pk'])
-
+        context['shopnum']=self.kwargs['shop_pk']
         return render(request, self.template_name, context)
     
 
     def post(self, request, **kwargs):
 
         context = self.get_month_calendar()
-        user_pk = self.kwargs['user_pk']
-        user = get_object_or_404(User, pk=user_pk)
-        context['user'] = user
-        shops = user.shops
+        shop_pk = self.kwargs['shop_pk']
+        # user = self.model.objects.filter(shops__shop=shop_pk).order_by('user__email')
+        # users= User.objects.filter(shops__shop=shop_pk)
+        
+        # context['user'] = user
+        # shops = user.shops
         formset = context['month_formset']
         if formset.is_valid():
-
+            
+            print(12121212)
             instances = formset.save(commit=False)
             for schedule in instances:
-                schedule.user = user
-                user.schedule = schedule
-                shops.schedule = schedule
-                schedule.shops = user.shops
+                print(schedule.user,schedule.shops)
+                user = schedule.user
+                shops = schedule.shops
                 schedule.save()
                 shops.save()
                 user.save()
-            return redirect('shift:week_with_schedule', user_pk=user_pk)
+            return redirect('shift:month_with_schedule', shop_pk=shop_pk)
 
-        return render(request, self.template_name, context)        
+        # return redirect('shift:shift_list')        
 
 class Shop_base_views(generic.CreateView):
     model = Shop_config

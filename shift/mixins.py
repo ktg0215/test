@@ -359,14 +359,14 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
             '{}__range'.format(self.date_field): (start, end),
                  
         }
-        queryset = self.model.objects.filter(**lookup).order_by('user__userdata__start_day')
+        queryset = self.model.objects.filter(**lookup).order_by('user_id')
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
         # df.loc["希望人数"]=0
         df.loc["必要人数"]=0
         df.loc["過不足"]=0
 
-
+        k=[]
         a=1
         for schedule in queryset:
             if schedule.user in b:
@@ -382,6 +382,20 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
                     a = 2
+                    k.append(user)
+                elif schedule.user.last_name+' '+schedule.user.first_name in k:
+                    user=schedule.user.last_name+' '+schedule.user.first_name
+                    date= schedule.date
+                    start_time=schedule.get_start_time_display()
+                    end_time = schedule.get_end_time_display()
+                    time = start_time+'-'+end_time
+                    if time == '-':
+                        time=None
+                    # ddf =pd.DataFrame({date:time},index =[user])
+                    df[date]= df[date].astype(str)
+                    df.at[user,date] =time
+                    df.fillna(" ", inplace=True)
+                    k.append(user)
                     
                 elif user != schedule.user.last_name+' '+schedule.user.first_name: 
                     user=schedule.user.last_name+' '+schedule.user.first_name
@@ -394,6 +408,8 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
                     ddf =pd.DataFrame({date:time},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
+                    k.append(user)
+                    
                     
                 else:    
                     user=schedule.user.last_name+' '+schedule.user.first_name
@@ -407,6 +423,7 @@ class ShopShiftWithScheduleMixin(WeekCalendarMixin):
                     df[date]= df[date].astype(str)
                     df.at[user,date] =time
                     df.fillna(" ", inplace=True)
+                    k.append(user)
             else:
                 pass
                    
@@ -487,108 +504,65 @@ class MasterMixin(MonthCalendarMixin):
         }
         shop = self.kwargs['shop_pk']
         user= User.objects.filter(shops__shop=shop)
-    
         b =[]
         for a in user:
             b.append(a)
-        queryset = self.model.objects.filter(**lookup,shops__shop=shop).order_by('user__userdata__start_day')
-        set=[]
-        count=(len(queryset))
+        queryset = self.model.objects.filter(**lookup,shops__shop=shop).order_by('user__email')
+        count=(len(user))
+        o_day=days
+        
+        day = {day: [] for day in days}  
+           
+        df = pd.DataFrame(day)
+        cc=[]
+        num=[]
         for per in queryset:
-            if per.user in b:
-                last=per.user.last_name
-                first=per.user.first_name
-                user=last+' '+first
-                set.append(user)
-        FormClass = forms.modelformset_factory(self.model, self.form_class, extra=count,max_num=count)
+            if per.user in cc:
+                num.append(per.user)
+                pass
+            elif per.user in b:
+                user=per.user
+                num.append(per.user)
+                cc.append(user)
+        
+        pp=len(cc)
+        num=len(num)
+        l =((end.day -start.day+1)*pp)-num
+        m=((end.day -start.day+1)*pp)
+        FormClass = forms.modelformset_factory(self.model, self.form_class, extra=5,max_num=m,can_delete=True)
         if self.request.method == 'POST':
-
             formset = self.month_formset = FormClass(self.request.POST)
         else:
             formset = self.month_formset = FormClass(queryset=queryset)
-            dates =[]
-            days = {day: [] for day in days}   
-            df = pd.DataFrame(days)
+            users=[]
             a=1
-            # ↓新しいフォームが作成されないようにデータのある日付を一回消してる
-            # for bound_form in formset.initial_forms:
-            #     instance = bound_form.instance
-            #     date = getattr(instance, self.date_field)
-            #     dates.append(date)
-                
-            #     days.remove(date)   
-            users={user:[] for user in set }
-            day_forms = {day: [] for day in days }
-            # ↓初回作成用【2回目以降は多分通らない】
-            # for empty_form, (date, empty_list) in zip(formset.extra_forms, day_forms.items()):
-            #     empty_form.initial = {self.date_field: date}
-            #     empty_list.append(empty_form)
-            a=1
-            for bound_form,user in zip(formset.initial_forms,set):
-                if a==1:
+            for bound_form in formset.initial_forms:
+                if a==1 or user!=bound_form.instance.user:
                     instance = bound_form.instance
+                    user=instance.user
                     date = getattr(instance, self.date_field)
-                    # d2 ={date:[vou]}
-                    # d2[date].append(bound_form)   
                     ddf =pd.DataFrame({date:[bound_form]},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
-                    b=user
                     a=2
-                elif user != b: 
-                    instance = bound_form.instance
-                    date = getattr(instance, self.date_field)
-                    ddf =pd.DataFrame({date:[bound_form]},index =[user])
-                    df = pd.concat([df,ddf],axis=0)
-                    df.fillna(" ", inplace=True)
-                    b=user
-                    print(df)
                 else:
                     instance = bound_form.instance
+                    user=instance.user
                     date = getattr(instance, self.date_field)
                     df.at[user,date] =bound_form
                     df.fillna(" ", inplace=True)
-            formset=df
-            # for bound_form,user in zip(formset.initial_forms,set):
-            #     if a==1:
-            #         b=user
-            #         instance = bound_form.instance
-            #         date = getattr(instance, self.date_field)
-            #         d2 ={date:[]}
-            #         d2[date].append(bound_form)   
-            #         day_forms.update(d2)
-            #         aa={user:[]}
-            #         aa[user].append(day_forms)
-            #         users.update(aa)
-            #         a=2
-            #     if user != b:
-            #         day_forms = {day: [] for day in days }
-                
-            #         u={user:[]}
-            #         u=[user].append(user)
-            #         b=user
-            #         instance = bound_form.instance
-            #         date = getattr(instance, self.date_field)
-            #         d2 ={date:[]}
-            #         d2[date].append(bound_form)   
-            #         day_forms.update(d2)
-            #         aa={user:[]}
-            #         aa[user].append(day_forms)
-            #         users.update(aa)
-            #     else:
-            #         instance = bound_form.instance
-            #         date = getattr(instance, self.date_field)
-            #         d2 ={date:[]}
-            #         d2[date].append(bound_form)   
-            #         day_forms.update(d2)
-            #         aa={user:[]}
-            #         aa[user].append(day_forms)
-            #         users.update(aa)
-            #         b=user
-            # print(users)
             
-            # day_forms = sorted(day_forms.items())
-            # day_forms=dict(day_forms)
+            for user in cc:
+                for empty_form,date in zip(formset.extra_forms,days):
+                    if df.at[user,date] ==' ' :
+                        print(user,date)
+                        empty_form.initial = {self.date_field: date}
+                        df.at[user,date] =empty_form
+                        df.fillna(" ", inplace=True) 
+                    else:
+                        pass
+                       
+            formset=df
         return formset
 
     def get_month_calendar(self):
@@ -601,7 +575,8 @@ class MasterMixin(MonthCalendarMixin):
             month_last,
             month_days
         )
-        
+        calendar_context['month_formset'] = self.month_formset
+
         return calendar_context
 
 class WeekWithScheduleMixin(WeekCalendarMixin):
@@ -634,36 +609,139 @@ class WeekWithScheduleMixin(WeekCalendarMixin):
         return calendar_context
 
 
-class MonthWithScheduleMixin(MonthCalendarMixin):
+class MonthWithScheduleMixin(WeekCalendarMixin):
     """スケジュール付きの、月間カレンダーを提供するMixin"""
 
-    def get_month_schedules(self, start, end, days):
-        """それぞれの日とスケジュールを返す"""
+    def get_week_schedules(self, start, end, days):
+        
+        shop = self.kwargs['shop_pk']
+        user= User.objects.filter(shops__shop=shop)
+        q =Shop_config.objects.filter(shops__shop=shop)
+    
+        b =[]
+        for a in user:
+            b.append(a)
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
-            'user__pk': self.kwargs.get('user_pk'),
+                 
         }
-        queryset = self.model.objects.filter(**lookup)
+        queryset = self.model.objects.filter(**lookup).order_by('user_id')
+        days = {day: [] for day in days}   
+        df = pd.DataFrame(days)
+        # df.loc["希望人数"]=0
+        df.loc["必要人数"]=0
+        df.loc["過不足"]=0
 
-        day_schedules = {day: [] for week in days for day in week}
+
+        a=1
         for schedule in queryset:
-            schedule_date = getattr(schedule, self.date_field)
-            day_schedules[schedule_date].append(schedule)
+            if schedule.user in b:
+                if a == 1:
+                    user=schedule.user.last_name+' '+schedule.user.first_name
+                    date= schedule.date
+                    start_at=schedule.get_start_at_display()
+                    end_at = schedule.get_end_at_display()
+                    time = start_at+'-'+end_at
+                    if time == '-':
+                        time=None
+                    ddf =pd.DataFrame({date:time},index =[user])
+                    df = pd.concat([df,ddf],axis=0)
+                    df.fillna(" ", inplace=True)
+                    a = 2
+                    
+                elif user != schedule.user.last_name+' '+schedule.user.first_name: 
+                    user=schedule.user.last_name+' '+schedule.user.first_name
+                    date= schedule.date
+                    start_at=schedule.get_start_at_display()
+                    end_at = schedule.get_end_at_display()
+                    time = start_at+'-'+end_at
+                    if time == '-':
+                        time=None
+                    ddf =pd.DataFrame({date:time},index =[user])
+                    df = pd.concat([df,ddf],axis=0)
+                    df.fillna(" ", inplace=True)
+                    
+                else:    
+                    user=schedule.user.last_name+' '+schedule.user.first_name
+                    date= schedule.date
+                    start_at=schedule.get_start_at_display()
+                    end_at = schedule.get_end_at_display()
+                    time = start_at+'-'+end_at
+                    if time == '-':
+                        time=None
+                    # ddf =pd.DataFrame({date:time},index =[user])
+                    df[date]= df[date].astype(str)
+                    df.at[user,date] =time
+                    df.fillna(" ", inplace=True)
+            else:
+                pass
+                   
+               
+        df.fillna(" ", inplace=True)
+        # 提出人数確認↓ーーーーーーーーーー
+        df_bool = (df == ' ')
+        df_bool.sum()
+        dfnum=[]
+        for m in df_bool.sum():
+            dfnum.append(m)
+        num=len(df)-2 #全体
+        df_num=[]
+        for a in dfnum:
+            b=num-a
+            df_num.append(b)
 
-        size = len(day_schedules)
-        return [{key: day_schedules[key] for key in itertools.islice(day_schedules, i, i+7)} for i in range(0, size, 7)]
+        # df.loc["希望人数"]=df_num
+        # 必要人数---------------↓
+        shop=Shops.objects.filter(shop=shop)
 
-    def get_month_calendar(self):
-        calendar_context = super().get_month_calendar()
-        month_days = calendar_context['month_days']
-        month_first = month_days[0][0]
-        month_last = month_days[-1][-1]
-        calendar_context['month_day_schedules'] = self.get_month_schedules(
-            month_first,
-            month_last,
-            month_days
+        lookup = {
+            '{}__range'.format(self.date_field): (start, end),
+        }
+        queryset = Shop_config_day.objects.filter(**lookup)
+        for shop_config_day in queryset:
+            if shop[0] == shop_config_day.shops:
+                date = shop_config_day.date
+                need = shop_config_day.day_need
+                df.at["必要人数",date] =int(need)
+                df.fillna(" ", inplace=True)
+            else:
+                pass
+        s=df.loc["必要人数"]  
+        p=[]   
+        for need in s:
+            p.append(need)
+        o=[]
+        for s,hope_pa in zip(p,df_num):
+            if isinstance(s, int):
+                f=hope_pa-s
+                o.append(f)  
+            else:       
+                s=0
+                f=hope_pa-s
+                o.append(f)
+        df.loc["過不足"]=o 
+                  
+        # for shop_config_day,hope_pa in zip(queryset,df_num):
+        #     # print(shop_config_day.day_need)
+        #     if shop[0] == shop_config_day.shops:
+        #         date = shop_config_day.date
+        #         need = shop_config_day.day_need
+        #         hope = hope_pa -need
+        #         # print(hope_pa,need,"あ",hope,date)
+        #         df.at["過不足",date] =hope
+        #         df.fillna(" ", inplace=True)
+        #     else:
+        #         pass        
+        return df
+
+    def get_week_calendar(self):
+        calendar_context = super().get_week_calendar()
+        calendar_context['df'] = self.get_week_schedules(
+            calendar_context['week_first'],
+            calendar_context['week_last'],
+            calendar_context['week_days']
         )
-        return calendar_context
+        return calendar_context 
 
 
 class MonthWithFormsMixin(MonthCalendarMixin):

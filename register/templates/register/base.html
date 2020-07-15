@@ -2,6 +2,7 @@
 {% bootstrap_css %}
 {% bootstrap_javascript jquery='full' %}
 {% load widget_tweaks %}
+{% load crispy_forms_tags %}
 
 <head>
   <html lang="ja">
@@ -34,10 +35,13 @@
               <a class="nav-link" href="{% url 'shift:shift_list' %}">Shift確認</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'shift:day_config' user.shops.shop %}">Day Config</a>
+              <a class="nav-link" href="{% url 'shift:day_config' user.shops.shop %}">過不足設定</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'shift:master' user.shops.shop %}">mas</a>
+              <a class="nav-link" href="{% url 'shift:master' user.shops.shop %}">シフト作成</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'shift:month_with_schedule' user.shops.shop %}">作成シフト確認</a>
             </li>
 
 

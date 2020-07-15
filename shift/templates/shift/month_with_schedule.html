@@ -1,54 +1,220 @@
-{% extends 'shift/base.html' %}
+{% extends "register/base.html" %}
 {% block content %}
-    <style>
-        table {
-            table-layout: fixed;
-        }
 
-        td > div {
-            height: 100px;
-            overflow: hidden;
-            white-space: nowrap;
-        }
 
-    </style>
-    <a href="{% url 'shift:month_with_schedule' user.pk month_previous.year month_previous.month %}">前月</a>
-    {{ month_current | date:"Y年m月" }}
-    <a href="{% url 'shift:month_with_schedule' user.pk month_next.year month_next.month %}">次月</a>
+{% load static %}
 
-    <table class="table">
-        <thead>
-        <tr>
-            {% for w in week_names %}
-                <th>{{ w }}</th>
-            {% endfor %}
-        </tr>
-        </thead>
-        <tbody>
-        {% for week_day_schedles in month_day_schedules %}
-            <tr>
-                {% for day, schedules in week_day_schedles.items %}
-                    {% if now == day %}
-                        <td class="table-success">
-                            {% else %}
-                        <td>
-                    {% endif %}
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" /> -->
 
-                <div>
-                    {% if month_current.month != day.month %}
-                        {{ day | date:"m/d" }}
-                    {% else %}
-                        {{ day.day }}
-                    {% endif %}
 
-                    {% for schedule in schedules %}
-                        <p>{{ schedule.summary }}</p>
-                    {% endfor %}
-                </div>
-                </td>
-                {% endfor %}
-            </tr>
+<style>
+.mgr-10{
+    margin-right : 100px;
+}
+    
+</style>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-link" href="{% url 'shift:shift_list' %}">全店</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        {% for s in bshop %}
+        <a class="nav-item nav-link" href="{% url 'shift:shopshift_list' s.shop %}">{{s.get_shop_display}}店</a>
         {% endfor %}
-        </tbody>
-    </table>
+        
+      </div>
+    </div>
+  </nav>
+<div class="row">
+  <div class="col-sm">
+    <h3>{{ week_first}}-{{ week_last }}</h3>
+    </div>  </div>
+
+<table class="table table-bordered"　>
+
+  <th>User</th>
+  {% for day in df %}
+  <th>{{day | date:"n"}}月{{day | date:"j" }}日 
+    {% if day|date:"D" == "日" %}
+      <small>
+          <span style="color: #F00;">({{ day | date:"D" }})</span>
+      </small></th>
+      {% elif day|date:"D" == "土" %}
+      <small>
+            <span style="color:#0000FF">({{ day | date:"D" }})</span>
+      </small></th>
+      {% else %}
+        <small>({{ day|date:"D" }})</small></th>
+  
+             {% endif %} {% endfor %}
+
+{% for index,row in df.iterrows %}
+{% if index == "希望人数" %}
+
+<tr>    
+    <th bgcolor="#EEEEEE">{{index}}</th>
+    <td  bgcolor="#EEEEEE">{{row.0}}</td>
+    <td  bgcolor="#EEEEEE">{{row.1}}</td>
+    <td  bgcolor="#EEEEEE">{{row.2}}</td>
+    <td  bgcolor="#EEEEEE">{{row.3}}</td>
+    <td  bgcolor="#EEEEEE">{{row.4}}</td>
+    <td  bgcolor="#EEEEEE">{{row.5}}</td>
+    <td  bgcolor="#EEEEEE">{{row.6}}</td>
+    <td  bgcolor="#EEEEEE">{{row.7}}</td>
+    <td  bgcolor="#EEEEEE">{{row.8}}</td>
+    <td  bgcolor="#EEEEEE">{{row.9}}</td>
+    <td  bgcolor="#EEEEEE">{{row.10}}</td>
+    <td  bgcolor="#EEEEEE">{{row.11}}</td>
+    <td  bgcolor="#EEEEEE">{{row.12}}</td>
+    <td  bgcolor="#EEEEEE">{{row.13}}</td>
+    <td  bgcolor="#EEEEEE">{{row.14}}</td>
+    
+    
+    <td  bgcolor="#EEEEEE">{{row.15}}</td>
+   
+</tr>
+{% elif index == "必要人数" %}
+
+<tr>    
+    <th bgcolor="#EEEEEE">{{index}}</th>
+    <td  bgcolor="#EEEEEE">{{row.0}}</td>
+    <td  bgcolor="#EEEEEE">{{row.1}}</td>
+    <td  bgcolor="#EEEEEE">{{row.2}}</td>
+    <td  bgcolor="#EEEEEE">{{row.3}}</td>
+    <td  bgcolor="#EEEEEE">{{row.4}}</td>
+    <td  bgcolor="#EEEEEE">{{row.5}}</td>
+    <td  bgcolor="#EEEEEE">{{row.6}}</td>
+    <td  bgcolor="#EEEEEE">{{row.7}}</td>
+    <td  bgcolor="#EEEEEE">{{row.8}}</td>
+    <td  bgcolor="#EEEEEE">{{row.9}}</td>
+    <td  bgcolor="#EEEEEE">{{row.10}}</td>
+    <td  bgcolor="#EEEEEE">{{row.11}}</td>
+    <td  bgcolor="#EEEEEE">{{row.12}}</td>
+    <td  bgcolor="#EEEEEE">{{row.13}}</td>
+    <td  bgcolor="#EEEEEE">{{row.14}}</td>
+    {% if row.15 == None %}
+    
+    {% else %}    <td  bgcolor="#EEEEEE">{{row.15}}</td>
+   {% endif %}
+</tr>
+{% elif index == "過不足"%}
+
+<tr>    
+    <th bgcolor="#EEEEEE">{{index}}</th>
+    {% if row.0 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.0}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.0}}</td>
+    {% endif %}
+    {% if row.1 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.1}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.1}}</td>
+    {% endif %}
+    {% if row.2 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.2}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.2}}</td>
+    {% endif %}
+    {% if row.3 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.3}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.3}}</td>
+    {% endif %}
+    {% if row.4 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.4}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.4}}</td>
+    {% endif %}
+    {% if row.5 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.5}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.5}}</td>
+    {% endif %}
+    {% if row.6 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.6}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.6}}</td>
+    {% endif %}
+    {% if row.7 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.7}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.7}}</td>
+    {% endif %}
+    {% if row.8 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.8}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.8}}</td>
+    {% endif %}
+    {% if row.9 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.9}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.9}}</td>
+    {% endif %}
+    {% if row.10 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.10}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.10}}</td>
+    {% endif %}
+    {% if row.11 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.11}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.11}}</td>
+    {% endif %}
+    {% if row.12 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.12}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.12}}</td>
+    {% endif %}
+    {% if row.13 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.13}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.13}}</td>
+    {% endif %}
+    {% if row.14 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.14}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.14}}</td>
+    {% endif %}
+    {% if row.15 == None %}
+    {% elif row.15 < 0 %}
+    <td  bgcolor="#ff7f50">{{row.15}}</td>
+    {% else %}
+    <td  bgcolor="#EEEEEE">{{row.15}}</td>
+    {% endif %}
+   
+</tr>
+{% else %}
+<tr>
+  <th>{{index}}</th>
+  <td>{{ row.0}}</td>
+    <td>{{row.1}}</td>
+    <td>{{row.2}}</td>
+    <td>{{row.3}}</td>
+    <td>{{row.4}}</td>
+    <td>{{row.5}}</td>
+    <td>{{row.6}}</td>
+    <td>{{row.7}}</td>
+    <td>{{row.8}}</td>
+    <td>{{row.9}}</td>
+    <td>{{row.10}}</td>
+    <td>{{row.11}}</td>
+    <td>{{row.12}}</td>
+    <td>{{row.13}}</td>
+    <td>{{row.14}}</td>
+    {% if row.15 == None %}
+    
+    {% else %}
+    <td>{{row.15}}</td>
+    {% endif %}
+</tr>
+{% endif %}
+{% endfor %}
+
+
+</table>
+
+
 {% endblock %}

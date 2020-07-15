@@ -1,5 +1,6 @@
 from django import forms
 from .models import Schedule,Shop_config,Shop_config_day
+from crispy_forms.helper import FormHelper
 
 
 class BS4ScheduleForm(forms.ModelForm):
@@ -41,7 +42,30 @@ class SimpleScheduleForm(forms.ModelForm):
             'date': forms.HiddenInput,
             'shop':forms.HiddenInput,
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False
+class MasterForm(forms.ModelForm):
+    """シンプルなスケジュール登録用フォーム"""
 
+    class Meta:
+        model = Schedule
+        fields = ('start_at', 'end_at', 'date',)
+        widgets = {
+            # 'summary': forms.TextInput(attrs={
+                # 'class': 'form-control',
+            # }),
+            'date': forms.HiddenInput,
+            'shop':forms.HiddenInput,
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['placeholder'] = field.label       
 class Shop_base_configForm(forms.ModelForm):
     class Meta:
         model = Shop_config

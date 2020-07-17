@@ -1,7 +1,7 @@
 {% extends "register/base.html" %}
 {% block content %}
 {% load crispy_forms_tags %}
-
+{% load widget_tweaks %}
 {% load static %}
 
 <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" /> -->
@@ -40,16 +40,65 @@ table {
  <tr>
     
 {% for index,a in month_day_forms.iterrows %}
-<div class="row">
-<th class="col-xs-1">{{index.last_name}}&nbsp;{{index.first_name}}</th>
-<td class="col-xs-1">{{a.0.date}}{{a.0.id}}{{a.0.start_at|as_crispy_field}}<br>{{a.0.end_at|as_crispy_field}}{{a.DELETE}}</td>
-<td class="col-xs-1">{{a.1.date}}{{a.1.id}}{{a.1.start_at|as_crispy_field}}<br>{{a.1.end_at|as_crispy_field}}</td>
-<td class="col-xs-1">{{a.2.date}}{{a.2.id}}{{a.2.start_at|as_crispy_field}}<br>{{a.2.end_at|as_crispy_field}}</td>
 
-<td class="col-xs-1">{{a.3.date}}{{a.3.id}}{{a.3.start_at|as_crispy_field}}<br>{{a.3.end_at|as_crispy_field}}</td>
-<td class="col-xs-1">{{a.4.date}}{{a.4.id}}{{a.4.start_at|as_crispy_field}}<br>{{a.4.end_at|as_crispy_field}}</td>
-<td class="col-xs-1">{{a.5.date}}{{a.5.id}}{{a.5.start_at|as_crispy_field}}<br>{{a.5.end_at|as_crispy_field}}</td>
-<td class="col-xs-1">{{a.6.date}}{{a.6.id}}{{a.6.start_at|as_crispy_field}}<br>{{a.6.end_at|as_crispy_field}}</td>
+  
+<th>{{index.last_name}}&nbsp;{{index.first_name}}</th>
+<td> {{a.0.date}}{{a.0.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.0.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.0.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+<td> {{a.1.date}}{{a.1.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.1.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.1.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+<td> {{a.2.date}}{{a.2.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.2.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.2.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+<td> {{a.3.date}}{{a.3.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.3.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.3.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+<td> {{a.4.date}}{{a.4.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.4.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.4.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+<td> {{a.5.date}}{{a.5.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.5.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.5.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+<td> {{a.6.date}}{{a.6.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.6.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.6.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
 
 </div>
 

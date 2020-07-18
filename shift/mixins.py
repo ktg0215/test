@@ -3,7 +3,6 @@ from collections import deque
 import datetime
 import itertools
 from django import forms
-from django_pandas.io import read_frame
 from register.models import User,Shops
 import pandas as pd
 import numpy as np
@@ -70,7 +69,7 @@ class ShiftWithScheduleMixin(PizzaMixin):
             '{}__range'.format(self.date_field): (start, end),
            
         }
-        queryset = self.model.objects.filter(**lookup).order_by('user__userdata__start_day')
+        queryset = self.model.objects.filter(**lookup).order_by('user_id')
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
         df.loc["希望人数"]=0
@@ -148,8 +147,6 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
         bet=shop
         user= User.objects.filter(shops__shop=shop)
         q =Shop_config.objects.filter(shops__shop=shop)
-        print(shop)
-    
         b =[]
         for a in user:
             b.append(a)
@@ -157,7 +154,7 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
             '{}__range'.format(self.date_field): (start, end),
                  
         }
-        queryset = self.model.objects.filter(**lookup).order_by('user__userdata__start_day')
+        queryset = self.model.objects.filter(**lookup).order_by('user__userdata__no')
         days = {day: [] for day in days}   
         df = pd.DataFrame(days)
         df.loc["天気"]=None
@@ -351,35 +348,124 @@ class WeekWithScheduleMixin(PizzaMixin):
 class MonthWithScheduleMixin(PizzaMixin):
     """スケジュール付きの、月間カレンダーを提供するMixin"""
 
-    def get_month_schedules(self, start, end, days):
-        """それぞれの日とスケジュールを返す"""
+    def get_week_schedules(self, start, end, days):
+        
+        shop = self.kwargs['shop_pk']
+        user= User.objects.filter(shops__shop=shop)
+        q =Shop_config.objects.filter(shops__shop=shop)
+    
+        b =[]
+        for a in user:
+            b.append(a)
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
-            'user__pk': self.kwargs.get('user_pk'),
+                 
         }
-        queryset = self.model.objects.filter(**lookup)
+        queryset = self.model.objects.filter(**lookup).order_by('user__userdata__no')
+        days = {day: [] for day in days}   
+        df = pd.DataFrame(days)
+        # df.loc["希望人数"]=0
+        df.loc["必要人数"]=0
+        df.loc["過不足"]=0
 
-        day_schedules = {day: [] for week in days for day in week}
+
+        a=1
         for schedule in queryset:
-            schedule_date = getattr(schedule, self.date_field)
-            day_schedules[schedule_date].append(schedule)
+            if schedule.user in b:
+                if a == 1:
+                    user=schedule.user.last_name+' '+schedule.user.first_name
+                    date= schedule.date
+                    start_at=schedule.get_start_at_display()
+                    end_at = schedule.get_end_at_display()
+                    time = start_at+'-'+end_at
+                    if time == '-':
+                        time=None
+                    ddf =pd.DataFrame({date:time},index =[user])
+                    df = pd.concat([df,ddf],axis=0)
+                    df.fillna(" ", inplace=True)
+                    a = 2
+                    
+                elif user != schedule.user.last_name+' '+schedule.user.first_name: 
+                    user=schedule.user.last_name+' '+schedule.user.first_name
+                    date= schedule.date
+                    start_at=schedule.get_start_at_display()
+                    end_at = schedule.get_end_at_display()
+                    time = start_at+'-'+end_at
+                    if time == '-':
+                        time=None
+                    ddf =pd.DataFrame({date:time},index =[user])
+                    df = pd.concat([df,ddf],axis=0)
+                    df.fillna(" ", inplace=True)
+                    
+                else:    
+                    user=schedule.user.last_name+' '+schedule.user.first_name
+                    date= schedule.date
+                    start_at=schedule.get_start_at_display()
+                    end_at = schedule.get_end_at_display()
+                    time = start_at+'-'+end_at
+                    if time == '-':
+                        time=None
+                    # ddf =pd.DataFrame({date:time},index =[user])
+                    df[date]= df[date].astype(str)
+                    df.at[user,date] =time
+                    df.fillna(" ", inplace=True)
+            else:
+                pass
+                   
+               
+        df.fillna(" ", inplace=True)
+        # 提出人数確認↓ーーーーーーーーーー
+        df_bool = (df == ' ')
+        df_bool.sum()
+        dfnum=[]
+        for m in df_bool.sum():
+            dfnum.append(m)
+        num=len(df)-2 #全体
+        df_num=[]
+        for a in dfnum:
+            b=num-a
+            df_num.append(b)
 
-        size = len(day_schedules)
-        return [{key: day_schedules[key] for key in itertools.islice(day_schedules, i, i+7)} for i in range(0, size, 7)]
+        # df.loc["希望人数"]=df_num
+        # 必要人数---------------↓
+        shop=Shops.objects.filter(shop=shop)
 
-    def get_month_calendar(self):
+        lookup = {
+            '{}__range'.format(self.date_field): (start, end),
+        }
+        queryset = Shop_config_day.objects.filter(**lookup)
+        for shop_config_day in queryset:
+            if shop[0] == shop_config_day.shops:
+                date = shop_config_day.date
+                need = shop_config_day.day_need
+                df.at["必要人数",date] =int(need)
+                df.fillna(" ", inplace=True)
+            else:
+                pass
+        s=df.loc["必要人数"]  
+        p=[]   
+        for need in s:
+            p.append(need)
+        o=[]
+        for s,hope_pa in zip(p,df_num):
+            if isinstance(s, int):
+                f=hope_pa-s
+                o.append(f)  
+            else:       
+                s=0
+                f=hope_pa-s
+                o.append(f)
+        df.loc["過不足"]=o 
+        return df
+
+    def get_week_calendar(self):
         calendar_context = super().get_week_calendar()
-        month_days = calendar_context['month_days']
-        month_first = month_days[0][0]
-        month_last = month_days[-1][-1]
-        calendar_context['month_day_schedules'] = self.get_month_schedules(
-            month_first,
-            month_last,
-            month_days
+        calendar_context['df'] = self.get_week_schedules(
+            calendar_context['week_first'],
+            calendar_context['week_last'],
+            calendar_context['week_days']
         )
-        return calendar_context
-
-
+        return calendar_context 
 class MonthWithFormsMixin(PizzaMixin):
     """スケジュール付きの、月間カレンダーを提供するMixin"""
 
@@ -496,6 +582,90 @@ class Day_configMixin(PizzaMixin):
         calendar_context['month_formset'] = self.month_formset
         
         return calendar_context
+class MasterMixin(PizzaMixin):
+
+    def get_month_forms(self, start, end, days):
+        """それぞれの日と紐づくフォームを作成する"""
+        lookup = {
+            '{}__range'.format(self.date_field): (start, end),
+            
+        }
+        shop = self.kwargs['shop_pk']
+        user= User.objects.filter(shops__shop=shop)
+        b =[]
+        for a in user:
+            b.append(a)
+        queryset = self.model.objects.filter(**lookup,shops__shop=shop).order_by('user__userdata__no')
+        o_day=days
+        
+        day = {day: [] for day in days}  
+           
+        df = pd.DataFrame(day)
+        cc=[]
+        num=[]
+        for per in queryset:
+            if per.user in cc:
+                num.append(per.user)
+                pass
+            elif per.user in b:
+                user=per.user
+                num.append(per.user)
+                cc.append(user)
+        
+        pp=len(cc)
+        num=len(num)
+        l =((end.day -start.day+1)*pp)-num
+        m=((end.day -start.day+1)*pp)
+        FormClass = forms.modelformset_factory(self.model, self.form_class, extra=5,max_num=m,can_delete=True)
+        if self.request.method == 'POST':
+            formset = self.month_formset = FormClass(self.request.POST)
+        else:
+            formset = self.month_formset = FormClass(queryset=queryset)
+            users=[]
+            a=1
+            for bound_form in formset.initial_forms:
+                if a==1 or user!=bound_form.instance.user:
+                    instance = bound_form.instance
+                    user=instance.user
+                    date = getattr(instance, self.date_field)
+                    ddf =pd.DataFrame({date:[bound_form]},index =[user])
+                    df = pd.concat([df,ddf],axis=0)
+                    df.fillna(" ", inplace=True)
+                    a=2
+                else:
+                    instance = bound_form.instance
+                    user=instance.user
+                    date = getattr(instance, self.date_field)
+                    df.at[user,date] =bound_form
+                    df.fillna(" ", inplace=True)
+            
+            for user in cc:
+                for empty_form,date in zip(formset.extra_forms,days):
+                    if df.at[user,date] ==' ' :
+                        empty_form.initial = {self.date_field: date}
+                        df.at[user,date] =empty_form
+                        df.fillna(" ", inplace=True) 
+                    else:
+                        pass
+                       
+            formset=df
+            print(formset)
+        return formset
+
+    def get_month_calendar(self):
+        calendar_context = super().get_week_calendar()
+        month_days = calendar_context['week_days']
+        month_first = month_days[0]
+        month_last = month_days[-1]
+        calendar_context['month_day_forms'] = self.get_month_forms(
+            month_first,
+            month_last,
+            month_days
+        )
+        calendar_context['month_formset'] = self.month_formset
+
+        return calendar_context
+
 class Week_CsvMixin(BaseCalendarMixin):
     """週間カレンダーの機能を提供するMixin"""
 

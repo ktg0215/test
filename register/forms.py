@@ -63,7 +63,11 @@ class ShopsForm(forms.ModelForm):
         model = Shops
         fields = ("shop",
         )
-        
+class MemberNoForm(forms.ModelForm):
+    class Meta:
+        model=UserData
+        fields =('no',)
+
 class UserDataForm(forms.ModelForm):
     class Meta:
         model = UserData

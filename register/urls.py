@@ -12,4 +12,6 @@ urlpatterns = [
     path('user_list/',views.Userlist.as_view(),name='user_list'),
     path('user_list/<int:pk>/shop_list/',views.Shoplist.as_view(),name='shop_list'),
     path('<int:pk>/delete/',views.UserDelete.as_view(),name='user_delete'),
+    path('<int:shop_pk>/No/',views.MemberNo.as_view(),name='no'),
+
    ]

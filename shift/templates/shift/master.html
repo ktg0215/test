@@ -1,0 +1,114 @@
+{% extends "register/base.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% load static %}
+
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" /> -->
+<style>
+table {
+    width: 30px;
+  }
+  table,th,td {
+    border: 1px solid #bbb;
+  }
+
+    
+</style>
+<a href="{% url 'shift:master' shopnum  week_previous.year week_previous.month week_previous.day  %}">前月</a>
+{{ month_current | date:"Y年m月" }}
+<a href="{% url 'shift:master' shopnum   week_next.year week_next.month week_next.day%}">次月</a>
+
+
+<table class="table table-bordered"　>
+
+    <div class="container">
+        <div class="row">
+         
+        
+
+    <form action="" method="POST">
+        {{ month_formset.management_form }}
+       
+
+  <tr> <th class="col-xs-1">User</th></div>
+  {% for day in month_day_forms %}
+  
+  <th class="col-xs-1">{{day | date:"n"}}月{{day | date:"j" }}日 </th> 
+ {%endfor%}</tr>
+
+ <tr>
+    
+{% for index,a in month_day_forms.iterrows %}
+
+  
+<th>{{index.last_name}}&nbsp;{{index.first_name}}</th>
+<td> {{a.0.date}}{{a.0.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.0.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.0.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+<td> {{a.1.date}}{{a.1.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.1.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.1.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+<td> {{a.2.date}}{{a.2.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.2.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.2.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+<td> {{a.3.date}}{{a.3.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.3.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.3.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+<td> {{a.4.date}}{{a.4.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.4.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.4.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+<td> {{a.5.date}}{{a.5.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.5.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.5.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+<td> {{a.6.date}}{{a.6.id}}
+  <div class="form-row">
+  <div class="form-group col-xs">
+ {{a.6.start_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs">
+  {{a.6.end_at|add_class:'form-control form-control-sm'}}</div>
+</div>
+</td>
+
+</div>
+
+</tr>
+    
+    {%endfor%}
+</table>
+{% csrf_token %}
+<button type="submit" class="btn btn-primary">送信</button>
+</form>
+
+
+{% endblock %}

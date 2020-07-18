@@ -2,7 +2,7 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import generic
-from .forms import BS4ScheduleForm, SimpleScheduleForm, Shop_base_configForm, Shop_config_dayForm
+from .forms import BS4ScheduleForm, SimpleScheduleForm, Shop_base_configForm, Shop_config_dayForm,MasterForm
 from .models import Schedule,Shop_config,Shop_config_day
 from . import mixins
 from .models import User
@@ -109,12 +109,46 @@ class MonthWithScheduleCalendar(mixins.MonthWithScheduleMixin, generic.TemplateV
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user'] = get_object_or_404(User, pk=self.kwargs['user_pk'])
+        context['shop'] =self.kwargs['shop_pk']
         calendar_context = self.get_week_calendar()
         context.update(calendar_context)
         return context
 
+class Master(mixins.MasterMixin, generic.View):
+    """フォーム付きの月間カレンダーを表示するビュー"""
+    template_name = 'shift/master.html'
+    model = Schedule
+    date_field = 'date'
+    form_class = MasterForm
 
+    def get(self, request, **kwargs):
+
+        context = self.get_month_calendar()
+        print(1231321)
+        # context['shop'] = get_object_or_404(User, pk=self.kwargs['shop_pk'])
+        context['shopnum']=self.kwargs['shop_pk']
+        return render(request, self.template_name, context)
+    
+        
+    def post(self, request, **kwargs):
+
+        context = self.get_month_calendar()
+        shop_pk = self.kwargs['shop_pk']
+        formset = context['month_formset']
+        if formset.is_valid():
+            
+            print(12121212)
+            instances = formset.save(commit=False)
+            for schedule in instances:
+                print(schedule.user,schedule.shops)
+                user = schedule.user
+                shops = schedule.shops
+                schedule.save()
+                shops.save()
+                user.save()
+            return redirect('shift:month_with_schedule', shop_pk=shop_pk)
+
+        # return redirect('shift:shift_list')  
 
 class MonthWithFormsCalendar(mixins.MonthWithFormsMixin, generic.View):
     """フォーム付きの月間カレンダーを表示するビュー"""
@@ -144,6 +178,8 @@ class MonthWithFormsCalendar(mixins.MonthWithFormsMixin, generic.View):
             instances = formset.save(commit=False)
             for schedule in instances:
                 schedule.user = user
+                schedule.end_at=schedule.end_time
+                schedule.start_at=schedule.start_time
                 user.schedule = schedule
                 shops.schedule = schedule
                 schedule.shops = user.shops

@@ -14,11 +14,13 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import generic
 from .forms import (
-    LoginForm, UserCreateForm,ShopsForm,UserDataForm
+    LoginForm, UserCreateForm,ShopsForm,UserDataForm,MemberNoForm
 )
 from django.shortcuts import render
 from .models import Shops,User,UserData
 from django.shortcuts import redirect, render, get_object_or_404
+from . import mixins
+
 
 User = get_user_model()
 
@@ -57,7 +59,7 @@ class Shoplist(generic.ListView):
         context = super().get_context_data(**kwargs)
         # context['shop'] = self.shop
         shop =self.kwargs['pk']
-        context['shops']= User.objects.filter(shops__shop=shop).order_by('userdata__position')
+        context['shops']= User.objects.filter(shops__shop=shop).order_by('userdata__no')
         bb=Shops.objects.all().order_by('shop')
         c=[]
         h=[]
@@ -71,6 +73,37 @@ class Shoplist(generic.ListView):
         context['bshop']=c
         
         return context
+class MemberNo(generic.View,mixins.NoMixin):
+    model=UserData
+    form_class=MemberNoForm
+    template_name='register/no.html'
+
+    def get(self, request, **kwargs):
+        shop_pk = self.kwargs['shop_pk']
+        context = self.get_member_no()
+
+        return render(request, self.template_name, context)
+    
+    
+
+    def post(self, request, **kwargs):
+
+        context = self.get_member_no()
+        formset = context['month_formset']
+        print(formset)
+
+        if formset.is_valid():
+            print("ああああああああああ")
+            instances = formset.save(commit=False)
+            for userdata in instances:
+                user = userdata.user
+                user.no=userdata.no
+
+                userdata.save()
+                user.save()
+            return redirect('register:user_list')
+        print(999999666666666666666666)
+        return render(request, self.template_name, context)
 
 
 class Top(generic.TemplateView):
@@ -101,6 +134,7 @@ def register_user(request):
 
         userdata = userdata_form.save(commit=False)
         userdata.user = user
+        userdata.no=user.id
         userdata.save()
         # Profileモデルの処理。↑のUserモデルと紐づけましょう。
         shop = shop_form.save(commit=False)

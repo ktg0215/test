@@ -2,6 +2,7 @@
 {% bootstrap_css %}
 {% bootstrap_javascript jquery='full' %}
 {% load widget_tweaks %}
+{% load crispy_forms_tags %}
 
 <head>
   <html lang="ja">
@@ -15,7 +16,7 @@
   
      <head>
   {% if user.is_superuser %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" >
+    <nav class="navbar navbar-dark bg-dark  navbar-expand-lg " >
         <a class="navbar-link" href="{% url 'register:top' %}"><img src="{% static 'images/pizza.png' %}" width="80" height="40"  class="d-inline-block align-top" alt=""></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -34,7 +35,16 @@
               <a class="nav-link" href="{% url 'shift:shift_list' %}">Shift確認</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'shift:day_config' user.shops.shop %}">設定</a>
+              <a class="nav-link" href="{% url 'shift:day_config' user.shops.shop %}">過不足設定</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'shift:master' user.shops.shop %}">シフト作成</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'shift:month_with_schedule' user.shops.shop %}">作成シフト確認</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register:no' user.shops.shop %}">順番</a>
             </li>
 
               </div></li>

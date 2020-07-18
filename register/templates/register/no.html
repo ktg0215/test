@@ -1,0 +1,45 @@
+{% extends "register/base.html" %}
+
+
+{% load static %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}{% block content %}
+
+<h3>{{user.shops.get_shop_display}}店</h3>
+
+<p>シフトの並び順を決めてください。</p>
+<p>数字が大きい順ではなく、11＜2　101＜2となります。</p>
+<p>お勧め設定　今後在籍が上下することを考えて下記の設定がお勧めです</p>
+<p>代行　100.101.102.103　デリ200.201.203.204 百の位をポジションで分けて十の位以下で順番を設定してください。</p>
+<p>userlistやシフトの並び順はここでの設定に依存します。</p>
+</p>
+<form action="" method="POST">
+    {{ month_formset.management_form }}
+    <table class="table table-bordered">
+        <tr>
+            <th>店舗</th>
+            <th>Position</th>
+            <th>User</th>
+            <th>順番</th>
+        </tr>
+
+{% for i in users %}
+{% for a,k in i.items %}
+<tr>
+<td>{{a.shops.get_shop_display}}店</td><td>{{k.id}}{{a.userdata.get_position_display}}</td><td>{{a.last_name}}&nbsp;{{a.first_name}}</td><td>{{k.no}}</td>
+
+
+
+</tr>
+
+{%endfor%}
+{%endfor%}
+</table>
+
+{% csrf_token %}
+<button type="submit" class="btn btn-primary">送信</button>
+</form>
+
+{% endblock %}

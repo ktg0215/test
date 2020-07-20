@@ -15,9 +15,15 @@ table {
 
     
 </style>
-<a href="{% url 'shift:master' shopnum  week_previous.year week_previous.month week_previous.day  %}">前月</a>
-{{ month_current | date:"Y年m月" }}
-<a href="{% url 'shift:master' shopnum   week_next.year week_next.month week_next.day%}">次月</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="{% url 'shift:master' shopnum  week_previous.year week_previous.month week_previous.day  %}">前<<<</a>
+  <div class="nav-item nav-link" >{{ week_first}}-{{ week_last }}</div>
+  <a class="nav-item nav-link"href="{% url 'shift:master' shopnum   week_next.year week_next.month week_next.day%}">>>>次</a>
+    </div>
+  </div>
+</nav>
 
 
 <table class="table table-bordered"　>
@@ -30,73 +36,75 @@ table {
     <form action="" method="POST">
         {{ month_formset.management_form }}
        
-
-  <tr> <th class="col-xs-1">User</th></div>
+<div class="container"><div class="row">
+  <tr>
+     <th><div class="col-sm">User</div></th>
   {% for day in month_day_forms %}
   
-  <th class="col-xs-1">{{day | date:"n"}}月{{day | date:"j" }}日 </th> 
- {%endfor%}</tr>
+  <th><div class="text-center">{{day | date:"n"}}月{{day | date:"j" }}日 
+    {% if day|date:"D" == "日" %}
+      <small>
+          <span style="color: #F00;">({{ day | date:"D" }})</span>
+      </small></div></th>
+      {% elif day|date:"D" == "土" %}
+      <small>
+            <span style="color:#0000FF">({{ day | date:"D" }})</span>
+      </small></div></th>
+      {% else %}
+        <small>({{ day|date:"D" }})</small></div></th>
+  
+             {% endif %} {% endfor %}
+</div>
+</div>
+
+
 
  <tr>
     
 {% for index,a in month_day_forms.iterrows %}
 
   
-<th>{{index.last_name}}&nbsp;{{index.first_name}}</th>
+<th>{{index.last_name}}</th>
 <td> {{a.0.date}}{{a.0.id}}
   <div class="form-row">
-  <div class="form-group col-xs">
- {{a.0.start_at|add_class:'form-control form-control-sm'}}</div>
-  <div class="form-group col-xs">
-  {{a.0.end_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs form-inline">
+ {{a.0.start_at|add_class:'form-control form-control-sm'}}{{a.0.end_at|add_class:'form-control form-control-sm'}}</div>
 </div>
 </td>
 <td> {{a.1.date}}{{a.1.id}}
   <div class="form-row">
-  <div class="form-group col-xs">
- {{a.1.start_at|add_class:'form-control form-control-sm'}}</div>
-  <div class="form-group col-xs">
-  {{a.1.end_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs form-inline">
+ {{a.1.start_at|add_class:'form-control form-control-sm'}}{{a.1.end_at|add_class:'form-control form-control-sm'}}</div>
 </div>
 </td>
 <td> {{a.2.date}}{{a.2.id}}
   <div class="form-row">
-  <div class="form-group col-xs">
- {{a.2.start_at|add_class:'form-control form-control-sm'}}</div>
-  <div class="form-group col-xs">
-  {{a.2.end_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs form-inline">
+ {{a.2.start_at|add_class:'form-control form-control-sm'}}{{a.2.end_at|add_class:'form-control form-control-sm'}}</div>
 </div>
 </td>
 <td> {{a.3.date}}{{a.3.id}}
   <div class="form-row">
-  <div class="form-group col-xs">
- {{a.3.start_at|add_class:'form-control form-control-sm'}}</div>
-  <div class="form-group col-xs">
-  {{a.3.end_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs form-inline">
+ {{a.3.start_at|add_class:'form-control form-control-sm'}}{{a.3.end_at|add_class:'form-control form-control-sm'}}</div>
 </div>
 </td>
 <td> {{a.4.date}}{{a.4.id}}
   <div class="form-row">
-  <div class="form-group col-xs">
- {{a.4.start_at|add_class:'form-control form-control-sm'}}</div>
-  <div class="form-group col-xs">
-  {{a.4.end_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs form-inline">
+ {{a.4.start_at|add_class:'form-control form-control-sm'}} {{a.4.end_at|add_class:'form-control form-control-sm'}}</div>
 </div>
 </td>
 <td> {{a.5.date}}{{a.5.id}}
   <div class="form-row">
-  <div class="form-group col-xs">
- {{a.5.start_at|add_class:'form-control form-control-sm'}}</div>
-  <div class="form-group col-xs">
-  {{a.5.end_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs form-inline">
+ {{a.5.start_at|add_class:'form-control form-control-sm'}}{{a.5.end_at|add_class:'form-control form-control-sm'}}</div>
 </div>
 </td>
 <td> {{a.6.date}}{{a.6.id}}
   <div class="form-row">
-  <div class="form-group col-xs">
- {{a.6.start_at|add_class:'form-control form-control-sm'}}</div>
-  <div class="form-group col-xs">
-  {{a.6.end_at|add_class:'form-control form-control-sm'}}</div>
+  <div class="form-group col-xs form-inline">
+ {{a.6.start_at|add_class:'form-control form-control-sm'}} {{a.6.end_at|add_class:'form-control form-control-sm'}}</div>
 </div>
 </td>
 

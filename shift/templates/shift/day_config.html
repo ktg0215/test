@@ -8,8 +8,18 @@
         } */
         
     </style>
-
-    <h2>{{ user.shops.get_shop_display }}店&nbsp; 店舗設定</h2>
+ 
+ <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <div class="navbar-text" >{{ user.shops.get_shop_display }}店</div>
+        <div class="navbar-text" >&nbsp;&nbsp;&nbsp;</div>
+        <a class="nav-item nav-link" href="{% url 'shift:day_config' user.shops.shop week_previous.year week_previous.month week_previous.day　%}">前<<<</a>
+    <div class="navbar-text" >{{ week_first}}-{{ week_last }}</div>
+    <a class="nav-item nav-link"href="{% url 'shift:day_config' user.shops.shop week_next.year week_next.month week_next.day%}">>>>次</a>
+      </div>
+    </div>
+  </nav>
     <p>・日毎の必要人数を入力してください</p>
     <p>・設定を行わない場合、過不足は表示されません</p>
     <p>・祝日は自動反映されません</p>

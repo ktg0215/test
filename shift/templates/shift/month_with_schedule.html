@@ -13,40 +13,46 @@
 }
     
 </style>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-link" href="{% url 'shift:shift_list' %}">全店</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        {% for s in bshop %}
-        <a class="nav-item nav-link" href="{% url 'shift:shopshift_list' s.shop %}">{{s.get_shop_display}}店</a>
-        {% endfor %}
-        
-      </div>
-    </div>
-  </nav>
-<div class="row">
-  <div class="col-sm">
-    <h3>{{ week_first}}-{{ week_last }}</h3>
-    </div>  </div>
 
+<nav class="navbar navbar-expand-lg navbar-light bg-light" >
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+     
+      {% for s in bshop %}
+      <li class="nav-item">
+        <a class="nav-item nav-link" href="{% url 'shift:month_with_schedule' s.shop %}">{{s.get_shop_display}}店</a>
+      </li>
+      {% endfor %}
+
+        </div></li>
+        </ul>
+        <span class="nav-item">
+          <a class="nav-link" href="{% url 'shift:month_with_schedule' shopnum  week_previous.year week_previous.month week_previous.day  %}">前<<<</a>
+        </span>
+        <span class="navbar-text">
+          <small>{{ week_first}}-{{ week_last }}</small>
+        </span>
+        <span class="nav-item">
+          <a class="nav-link"href="{% url 'shift:month_with_schedule' shopnum   week_next.year week_next.month week_next.day%}">>>>次</a>
+        </span>
+    
+  </div>
+</nav>
 <table class="table table-bordered"　>
 
-  <th>User</th>
+  <th><div class="text-center">User</div></th>
   {% for day in df %}
-  <th>{{day | date:"n"}}月{{day | date:"j" }}日 
+  <th><div class="text-center">{{day | date:"n"}}月{{day | date:"j" }}日 
     {% if day|date:"D" == "日" %}
       <small>
           <span style="color: #F00;">({{ day | date:"D" }})</span>
-      </small></th>
+      </small></div></th>
       {% elif day|date:"D" == "土" %}
       <small>
             <span style="color:#0000FF">({{ day | date:"D" }})</span>
-      </small></th>
+      </small></div></th>
       {% else %}
-        <small>({{ day|date:"D" }})</small></th>
+        <small>({{ day|date:"D" }})</small></div></th>
   
              {% endif %} {% endfor %}
 
@@ -54,86 +60,82 @@
 {% if index == "希望人数" %}
 
 <tr>    
-    <th bgcolor="#EEEEEE">{{index}}</th>
-    <td  bgcolor="#EEEEEE">{{row.0}}</td>
-    <td  bgcolor="#EEEEEE">{{row.1}}</td>
-    <td  bgcolor="#EEEEEE">{{row.2}}</td>
-    <td  bgcolor="#EEEEEE">{{row.3}}</td>
-    <td  bgcolor="#EEEEEE">{{row.4}}</td>
-    <td  bgcolor="#EEEEEE">{{row.5}}</td>
-    <td  bgcolor="#EEEEEE">{{row.6}}</td>
+    <td bgcolor="#EEEEEE"><small><div class="text-center">{{index}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.0}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.1}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.2}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.3}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.4}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.5}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.6}}</div></small></td>
   
    
 </tr>
 {% elif index == "必要人数" %}
 
 <tr>    
-    <th bgcolor="#EEEEEE">{{index}}</th>
-    <td  bgcolor="#EEEEEE">{{row.0}}</td>
-    <td  bgcolor="#EEEEEE">{{row.1}}</td>
-    <td  bgcolor="#EEEEEE">{{row.2}}</td>
-    <td  bgcolor="#EEEEEE">{{row.3}}</td>
-    <td  bgcolor="#EEEEEE">{{row.4}}</td>
-    <td  bgcolor="#EEEEEE">{{row.5}}</td>
-    <td  bgcolor="#EEEEEE">{{row.6}}</td>
+    <th bgcolor="#EEEEEE"><small><div class="text-center">{{index}}</div></small></th>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.0}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.1}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.2}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.3}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.4}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.5}}</div></small></td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.6}}</div></small></td>
     
-    {% if row.15 == None %}
-    
-    {% else %}    <td  bgcolor="#EEEEEE">{{row.15}}</td>
-   {% endif %}
 </tr>
 {% elif index == "過不足"%}
 
 <tr>    
-    <th bgcolor="#EEEEEE">{{index}}</th>
+    <th bgcolor="#EEEEEE"><small><div class="text-center">{{index}}</div></small></th>
     {% if row.0 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.0}}</td>
+    <td  bgcolor="#ff7f50"><small><div class="text-center">{{row.0}}</div></small></td>
     {% else %}
-    <td  bgcolor="#EEEEEE">{{row.0}}</td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.0}}</div></small></td>
     {% endif %}
     {% if row.1 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.1}}</td>
+    <td  bgcolor="#ff7f50"><small><div class="text-center">{{row.1}}</div></small></td>
     {% else %}
-    <td  bgcolor="#EEEEEE">{{row.1}}</td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.1}}</div></small></td>
     {% endif %}
     {% if row.2 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.2}}</td>
+    <td  bgcolor="#ff7f50"><small><div class="text-center">{{row.2}}</div></small></td>
     {% else %}
-    <td  bgcolor="#EEEEEE">{{row.2}}</td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.2}}</div></small></td>
     {% endif %}
     {% if row.3 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.3}}</td>
+    <td  bgcolor="#ff7f50"><small><div class="text-center">{{row.3}}</div></small></td>
     {% else %}
-    <td  bgcolor="#EEEEEE">{{row.3}}</td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.3}}</div></small></td>
     {% endif %}
     {% if row.4 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.4}}</td>
+    <td  bgcolor="#ff7f50"><small><div class="text-center">{{row.4}}</div></small></td>
     {% else %}
-    <td  bgcolor="#EEEEEE">{{row.4}}</td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.4}}</div></small></td>
     {% endif %}
     {% if row.5 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.5}}</td>
+    <td  bgcolor="#ff7f50"><small><div class="text-center">{{row.5}}</div></small></td>
     {% else %}
-    <td  bgcolor="#EEEEEE">{{row.5}}</td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.5}}</div></small></td>
     {% endif %}
     {% if row.6 < 0 %}
-    <td  bgcolor="#ff7f50">{{row.6}}</td>
+    <td  bgcolor="#ff7f50"><small><div class="text-center">{{row.6}}</div></small></td>
     {% else %}
-    <td  bgcolor="#EEEEEE">{{row.6}}</td>
+    <td  bgcolor="#EEEEEE"><small><div class="text-center">{{row.6}}</div></small></td>
     {% endif %}
     
    
 </tr>
 {% else %}
 <tr>
-  <th>{{index}}</th>
-  <td>{{ row.0}}</td>
-    <td>{{row.1}}</td>
-    <td>{{row.2}}</td>
-    <td>{{row.3}}</td>
-    <td>{{row.4}}</td>
-    <td>{{row.5}}</td>
-    <td>{{row.6}}</td>
+  <th><div class="text-center">{{index}}</div></th>
+  <td><div class="text-center">{{ row.0}}</div></td>
+    <td><div class="text-center">{{row.1}}</div></td>
+    <td><div class="text-center">{{row.2}}</div></td>
+    <td><div class="text-center">{{row.3}}</div></td>
+    <td><div class="text-center">{{row.4}}</div></td>
+    <td><div class="text-center">{{row.5}}</div></td>
+    <td><div class="text-center">{{row.6}}</div></td>
     
 </tr>
 {% endif %}

@@ -29,22 +29,23 @@
               <a class="nav-link" href="{% url 'register:user_list'%}">UserList</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'shift:month_with_forms' user.pk  %}">Shift</a>
+              <a class="nav-link" href="{% url 'shift:month_with_forms' user.pk  %}">提出</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'shift:shift_list' %}">Shift確認</a>
+              <a class="nav-link" href="{% url 'shift:shift_list' %}">希望</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'shift:master' user.shops.shop %}">作成</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'shift:month_with_schedule' user.shops.shop %}">確認</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'shift:day_config' user.shops.shop %}">過不足設定</a>
             </li>
+
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'shift:master' user.shops.shop %}">シフト作成</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'shift:month_with_schedule' user.shops.shop %}">作成シフト確認</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'register:no' user.shops.shop %}">順番</a>
+              <a class="nav-link" href="{% url 'register:no' user.shops.shop %}">並び順</a>
             </li>
 
               </div></li>

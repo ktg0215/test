@@ -110,6 +110,19 @@ class MonthWithScheduleCalendar(mixins.MonthWithScheduleMixin, generic.TemplateV
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['shop'] =self.kwargs['shop_pk']
+        bb=Shops.objects.all().order_by('shop')
+        c=[]
+        h=[]
+        b= 0
+        for a in bb:
+            if a.shop in h:
+                pass
+            else:
+                c.append(a)
+                h.append(a.shop)
+        context['bshop']=c
+        context['shopnum']=self.kwargs['shop_pk']
+
         calendar_context = self.get_week_calendar()
         context.update(calendar_context)
         return context

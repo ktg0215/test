@@ -33,7 +33,7 @@ urlpatterns = [
         views.MonthWithScheduleCalendar.as_view(), name='month_with_schedule'
     ),
     path(
-        'shop/<int:shop_pk>/month_with_schedule/<int:year>/<int:month>/',
+        'shop/<int:shop_pk>/month_with_schedule/<int:year>/<int:month>/<int:day>/',
         views.MonthWithScheduleCalendar.as_view(), name='month_with_schedule'
     ),
     path(

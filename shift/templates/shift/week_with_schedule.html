@@ -15,20 +15,19 @@
             {% for day,schedules in week_day_schedules.items %}
         <tr>
             
-            <td><div class="mgr-10">  {{ day | date:"n" }}月{{day |date:"j"}}日 
-                {% if day|date:"D" == "日" %}
-                <small>
-                    <span style="color: #F00;">({{ day | date:"D" }})</span>
-                </small>
-                {% elif day|date:"D" == "土" %}
-                <small>
-                    <span style="color:#0000FF">({{ day | date:"D" }})</span>
-                </small>
-                {% else %}
-                <small>
-                ({{ day|date:"D" }})
-            </small>
-               {% endif %} 
+    <th><div class="text-center">{{day | date:"n"}}月{{day | date:"j" }}日 
+    {% if day|date:"D" == "日" %}
+      <small>
+          <span style="color: #F00;">({{ day | date:"D" }})</span>
+      </small></div></th>
+      {% elif day|date:"D" == "土" %}
+      <small>
+            <span style="color:#0000FF">({{ day | date:"D" }})</span>
+      </small></div></th>
+      {% else %}
+        <small>({{ day|date:"D" }})</small></div></th>
+  
+             {% endif %}
             </div><hr></td>
 
        

@@ -262,6 +262,8 @@ class Shop_config_day_views(mixins.Day_configMixin, generic.View):
 
 
 
+
+
 # from django.shortcuts import render
 
 # from django.shortcuts import render

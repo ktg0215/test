@@ -528,11 +528,23 @@ class Day_configMixin(PizzaMixin):
     """スケジュール付きの、月間カレンダーを提供するMixin"""
 
     def get_month_forms(self, start, end, days):
-
+        shop = self.kwargs['shop_pk']
+        user= User.objects.filter(shops__shop=shop)
+        shop=[]
+        m=1
+        for a in user:
+            if m ==1:
+                n=a.shops.shop
+                shop.append(n)
+                m=2
+            else:
+                pass
+            
+            
+            
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
-            'shops__pk': self.kwargs.get('shop_pk'),
-            
+            # 'shops__pk': self.kwargs.get('shop_pk'),
         }
         queryset = self.model.objects.filter(**lookup)
         days_count = len(days)
@@ -544,29 +556,35 @@ class Day_configMixin(PizzaMixin):
             formset = self.month_formset = FormClass(queryset=queryset)
         dates =[]
         for bound_form in formset.initial_forms:
-            
             instance = bound_form.instance
-            date = getattr(instance, self.date_field)
-            
-            dates.append(date)
-            days.remove(date)
+            if instance.shops.shop in shop:
+                date = getattr(instance, self.date_field)
+                dates.append(date)
+                if date in days:
+                    days.remove(date)
+            else:
+                pass
         day_forms = {day: [] for day in days }
 
-
-        for empty_form, (date, empty_list) in zip(formset.extra_forms, day_forms.items()):
-            empty_form.initial = {self.date_field: date}
-            empty_list.append(empty_form)
+        # for empty_form, date in zip(formset.extra_forms, dates):
+        #     empty_form.initial = {self.date_field: date}
+        #     d2 ={date:[]}
+        #     d2[date].append(empty_form)   
+        #     day_forms.update(d2)
 
         for bound_form in formset.initial_forms:
             instance = bound_form.instance
-            date = getattr(instance, self.date_field)
-            d2 ={date:[]}
-            d2[date].append(bound_form)   
-            day_forms.update(d2)
+            if instance.shops.shop in shop:
+                date = getattr(instance, self.date_field)
+                d2 ={date:[]}
+                d2[date].append(bound_form)   
+                day_forms.update(d2)
+            else:
+                pass
+       
         
         day_forms = sorted(day_forms.items())
         day_forms=dict(day_forms)
-
         return [{key: day_forms[key] for key in itertools.islice(day_forms, 0, days_count)}]
 
     def get_month_calendar(self):

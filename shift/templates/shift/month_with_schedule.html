@@ -143,6 +143,13 @@
 
 
 </table>
+{% for day in df %}
+{% if forloop.first %}
 
+        <a href="{% url 'shift:shift_csv' shopnum day.year day.month day.day %}" class="btn btn-primary">csv</a>
+  
+{% else %}
+{% endif %}
+{% endfor %}  
 
 {% endblock %}

@@ -83,6 +83,8 @@ class ShiftWithScheduleMixin(PizzaMixin):
                 start_time=schedule.get_start_time_display()
                 end_time = schedule.get_end_time_display()
                 time = start_time+'-'+end_time
+                if time =='-':
+                    time=None
                 ddf =pd.DataFrame({date:time},index =[user])
                 df = pd.concat([df,ddf],axis=0)
                 df.fillna(" ", inplace=True)
@@ -95,6 +97,8 @@ class ShiftWithScheduleMixin(PizzaMixin):
                 start_time=schedule.get_start_time_display()
                 end_time = schedule.get_end_time_display()
                 time = start_time+'-'+end_time
+                if time =='-':
+                    time=None
                 ddf =pd.DataFrame({date:time},index =[user])
                 df = pd.concat([df,ddf],axis=0)
                 df.fillna(" ", inplace=True)
@@ -106,6 +110,9 @@ class ShiftWithScheduleMixin(PizzaMixin):
                 start_time=schedule.get_start_time_display()
                 end_time = schedule.get_end_time_display()
                 time = start_time+'-'+end_time
+                if time =='-':
+                    time=None
+            
                 
                 # ddf =pd.DataFrame({date:time},index =[user])
                 df[date]= df[date].astype(str)
@@ -528,8 +535,8 @@ class Day_configMixin(PizzaMixin):
     """スケジュール付きの、月間カレンダーを提供するMixin"""
 
     def get_month_forms(self, start, end, days):
-        shop = self.kwargs['shop_pk']
-        user= User.objects.filter(shops__shop=shop)
+        s = self.kwargs['shop_pk']
+        user= User.objects.filter(shops__shop=s)
         shop=[]
         m=1
         for a in user:
@@ -544,9 +551,9 @@ class Day_configMixin(PizzaMixin):
             
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
-            # 'shops__pk': self.kwargs.get('shop_pk'),
         }
-        queryset = self.model.objects.filter(**lookup)
+        queryset = self.model.objects.filter(**lookup,shops__shop=n)
+        print(queryset)
         days_count = len(days)
         FormClass = forms.modelformset_factory(self.model, self.form_class, extra=days_count,max_num=days_count)
         if self.request.method == 'POST':
@@ -554,23 +561,26 @@ class Day_configMixin(PizzaMixin):
             formset = self.month_formset = FormClass(self.request.POST)
         else:
             formset = self.month_formset = FormClass(queryset=queryset)
-        dates =[]
+        dates =days
+        
         for bound_form in formset.initial_forms:
             instance = bound_form.instance
             if instance.shops.shop in shop:
                 date = getattr(instance, self.date_field)
-                dates.append(date)
-                if date in days:
+                if date in days :
                     days.remove(date)
+                if date in dates:
+                    dates.remove(date)
             else:
                 pass
         day_forms = {day: [] for day in days }
-
-        # for empty_form, date in zip(formset.extra_forms, dates):
-        #     empty_form.initial = {self.date_field: date}
-        #     d2 ={date:[]}
-        #     d2[date].append(empty_form)   
-        #     day_forms.update(d2)
+        print(dates)
+        for empty_form, date in zip(formset.extra_forms, dates):
+            print(4566)
+            empty_form.initial = {self.date_field: date}
+            d2 ={date:[]}
+            d2[date].append(empty_form)   
+            day_forms.update(d2)
 
         for bound_form in formset.initial_forms:
             instance = bound_form.instance
@@ -756,7 +766,7 @@ class CsvMixin(Week_CsvMixin):
             '{}__range'.format(self.date_field): (start, end),
                  
         }
-        queryset = self.model.objects.filter(**lookup)
+        queryset = self.model.objects.filter(**lookup).order_by('user__userdata__no')
 
         # -----日付のみ出力
         dd =[]
@@ -778,6 +788,8 @@ class CsvMixin(Week_CsvMixin):
                     start_time=schedule.get_start_time_display()
                     end_time = schedule.get_end_time_display()
                     time = start_time+'-'+end_time
+                    if time =='-':
+                        time=None
                     ddf =pd.DataFrame({date:time},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
@@ -790,6 +802,8 @@ class CsvMixin(Week_CsvMixin):
                     start_time=schedule.get_start_time_display()
                     end_time = schedule.get_end_time_display()
                     time = start_time+'-'+end_time
+                    if time =='-':
+                        time=None
                     ddf =pd.DataFrame({date:time},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
@@ -801,6 +815,8 @@ class CsvMixin(Week_CsvMixin):
                     start_time=schedule.get_start_time_display()
                     end_time = schedule.get_end_time_display()
                     time = start_time+'-'+end_time
+                    if time =='-':
+                        time=None
                     ddf =pd.DataFrame({date:time},index =[user])
                     df[date]= df[date].astype(str)
                     df.at[user,date] =time

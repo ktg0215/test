@@ -63,7 +63,8 @@ class ShopShiftList(mixins.ShopShiftWithScheduleMixin, generic.TemplateView):
                 h.append(a.shop)
         context['bshop']=c
         context['shopnum']=self.kwargs['shops_pk']
-        
+        shop=self.kwargs['shops_pk']
+        context['shop']=Shops.objects.filter(shop=shop)
         context.update(calendar_context)
         return context   
 
@@ -122,6 +123,8 @@ class MonthWithScheduleCalendar(mixins.MonthWithScheduleMixin, generic.TemplateV
                 h.append(a.shop)
         context['bshop']=c
         context['shopnum']=self.kwargs['shop_pk']
+        shop=self.kwargs['shop_pk']
+        context['shop']=Shops.objects.filter(shop=shop)
 
         calendar_context = self.get_week_calendar()
         context.update(calendar_context)

@@ -547,8 +547,6 @@ class Day_configMixin(PizzaMixin):
             else:
                 pass
             
-            
-            
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
         }

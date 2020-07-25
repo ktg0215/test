@@ -10,6 +10,8 @@ from register.models import Shops
 from django.urls import reverse
 from django.http import HttpResponse
 import csv
+from openpyxl.writer.excel import save_virtual_workbook
+
 
 User = get_user_model()
 
@@ -79,13 +81,12 @@ class Shift_csv(mixins.CsvMixin, generic.TemplateView):
         context['shop'] =self.kwargs['shops_pk']
         calendar_context = self.get_week_calendar()
         context.update(calendar_context)
-        df = context['df']
         today = datetime.date.today()
         filename= today
-        response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
-        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(filename)
-        # response.write(df)
-        df.to_csv(path_or_buf=response, float_format='%.2f', index=True, decimal=",", encoding='shift_jis')
+        wb=context['wb']
+        response = HttpResponse(save_virtual_workbook(wb), content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename={}.xlsx'.format(filename)
+        wb.save(response)
         return response
 
 class WeekWithScheduleCalendar(mixins.WeekWithScheduleMixin, generic.TemplateView):

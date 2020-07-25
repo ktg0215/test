@@ -12,6 +12,11 @@ from django.shortcuts import render
 from bs4 import BeautifulSoup
 import urllib.request
 import re
+from openpyxl.writer.excel import save_virtual_workbook
+import openpyxl as px
+from openpyxl import worksheet
+from openpyxl.utils import range_boundaries
+
 
 
 class BaseCalendarMixin:
@@ -233,20 +238,27 @@ class ShopShiftWithScheduleMixin(PizzaMixin):
 
         # df.loc["希望人数"]=df_num
         # 必要人数---------------↓
-        shop=Shops.objects.filter(shop=shop)
+        # shop=Shops.objects.filter(shop=shop)
+        # for i in shop:
+        #     print(i.shop)
 
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
         }
-        queryset = Shop_config_day.objects.filter(**lookup)
+        queryset = Shop_config_day.objects.filter(**lookup,shops__shop=shop)
+        print(queryset)
         for shop_config_day in queryset:
-            if shop[0] == shop_config_day.shops:
-                date = shop_config_day.date
-                need = shop_config_day.day_need
-                df.at["必要人数",date] =int(need)
-                df.fillna(" ", inplace=True)
-            else:
-                pass
+            date = shop_config_day.date
+            need = shop_config_day.day_need
+            df.at["必要人数",date] =int(need)
+            df.fillna(" ", inplace=True)
+            # if shop[0] == shop_config_day.shops:
+            #     date = shop_config_day.date
+            #     need = shop_config_day.day_need
+            #     df.at["必要人数",date] =int(need)
+            #     df.fillna(" ", inplace=True)
+            # else:
+            #     pass
         s=df.loc["必要人数"]  
         p=[]   
         for need in s:
@@ -435,20 +447,24 @@ class MonthWithScheduleMixin(PizzaMixin):
 
         # df.loc["希望人数"]=df_num
         # 必要人数---------------↓
-        shop=Shops.objects.filter(shop=shop)
+        # shop=Shops.objects.filter(shop=shop)
 
         lookup = {
             '{}__range'.format(self.date_field): (start, end),
         }
-        queryset = Shop_config_day.objects.filter(**lookup)
+        queryset = Shop_config_day.objects.filter(**lookup,shops__shop=shop)
         for shop_config_day in queryset:
-            if shop[0] == shop_config_day.shops:
-                date = shop_config_day.date
-                need = shop_config_day.day_need
-                df.at["必要人数",date] =int(need)
-                df.fillna(" ", inplace=True)
-            else:
-                pass
+            date = shop_config_day.date
+            need = shop_config_day.day_need
+            df.at["必要人数",date] =int(need)
+            df.fillna(" ", inplace=True)
+            # if shop[0] == shop_config_day.shops:
+            #     date = shop_config_day.date
+            #     need = shop_config_day.day_need
+            #     df.at["必要人数",date] =int(need)
+            #     df.fillna(" ", inplace=True)
+            # else:
+            #     pass
         s=df.loc["必要人数"]  
         p=[]   
         for need in s:
@@ -752,7 +768,41 @@ class Week_CsvMixin(BaseCalendarMixin):
 class CsvMixin(Week_CsvMixin):
 
     def get_week_schedules(self, start, end, days):
+
+        wb = px.load_workbook(filename=r"\Users\ktgsh\Desktop\pizza\シフト表【ピザーラ】.xlsx", read_only=False, keep_vba=True)
+        ws = wb['原本']
+        sheet = wb['原本']
+        day=[]
+        for a in days:
+            b=a.day
+            day.append(b)
+        sheet['D1'] = day[0]
+        sheet['I1'] = day[1]
+        sheet['N1'] = day[2]
+        sheet['S1'] = day[3]
+        sheet['X1'] = day[4]
+        sheet['AC1'] = day[5]
+        sheet['AH1'] = day[6]
+        sheet['CV2'] = day[0]
+        sheet['CW2'] = day[1]
+        sheet['CX2'] = day[2]
+        sheet['CY2'] = day[3]
+        sheet['CZ2'] = day[4]
+        sheet['DA2'] = day[5]
+        sheet['DB2'] = day[6]
+        sheet['DF2'] = day[0]
+        sheet['DG2'] = day[1]
+        sheet['DH2'] = day[2]
+        sheet['DI2'] = day[3]
+        sheet['DI2'] = day[4]
+        sheet['DI2'] = day[5]
+        sheet['DI2'] = day[6]
         
+
+
+
+        
+            
         # shop = get_object_or_404(Shops, pk=self.kwargs['shops_pk'])
         shop=self.kwargs['shops_pk']
         user= User.objects.filter(shops__shop=shop)
@@ -774,40 +824,48 @@ class CsvMixin(Week_CsvMixin):
         # ^^^^^    
         days = {day: [] for day in dd }   
         df = pd.DataFrame(days)
-        
+        ff = pd.DataFrame(days)
+        users=[]
         a=1
         for schedule in queryset:
             
             if schedule.user in b:
                 if a == 1:
-                    user=schedule.user.last_name+' '+schedule.user.first_name
+                    user=schedule.user.last_name
                     date= schedule.date
                     date=date.day
                     start_time=schedule.get_start_time_display()
                     end_time = schedule.get_end_time_display()
-                    time = start_time+'-'+end_time
-                    if time =='-':
-                        time=None
-                    ddf =pd.DataFrame({date:time},index =[user])
+                    fff =pd.DataFrame({date:end_time},index =[user])
+                    ff = pd.concat([ff,fff],axis=0)
+                    ff.fillna(" ", inplace=True)
+
+                    ddf =pd.DataFrame({date:start_time},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
+                    ff.fillna(" ", inplace=True)
+                    users.append(user)
                     a = 2
                     
-                if user != schedule.user.last_name+' '+schedule.user.first_name: 
-                    user=schedule.user.last_name+' '+schedule.user.first_name
+                if user != schedule.user.last_name: 
+                    user=schedule.user.last_name
                     date= schedule.date
                     date=date.day
                     start_time=schedule.get_start_time_display()
                     end_time = schedule.get_end_time_display()
-                    time = start_time+'-'+end_time
-                    if time =='-':
-                        time=None
-                    ddf =pd.DataFrame({date:time},index =[user])
+                    fff =pd.DataFrame({date:end_time},index =[user])
+                    ff = pd.concat([ff,fff],axis=0)
+                    ff.fillna(" ", inplace=True)
+
+                    ddf =pd.DataFrame({date:start_time},index =[user])
                     df = pd.concat([df,ddf],axis=0)
                     df.fillna(" ", inplace=True)
+                    ff.fillna(" ", inplace=True)
+
+                    users.append(user)
                     
                 else:    
-                    user=schedule.user.last_name+' '+schedule.user.first_name
+                    user=schedule.user.last_name
                     date= schedule.date
                     date=date.day
                     start_time=schedule.get_start_time_display()
@@ -815,19 +873,49 @@ class CsvMixin(Week_CsvMixin):
                     time = start_time+'-'+end_time
                     if time =='-':
                         time=None
-                    ddf =pd.DataFrame({date:time},index =[user])
                     df[date]= df[date].astype(str)
-                    df.at[user,date] =time
+                    df.at[user,date] =start_time
+                    ff.at[user,date]=end_time
+                    ff.fillna(" ", inplace=True) 
                     df.fillna(" ", inplace=True) 
-        # csv保存-------------------        
-        df.fillna(" ", inplace=True)
+        a=df.values
+        b=ff.values
+        i=3
+        for user,w in zip(users,range(40)):
+            oo=i+w
+            print(user)
+            sheet.cell(row=oo, column=99, value=user)
+            sheet.cell(row=oo, column=109, value=user)
 
-        return df
+        i=[4,9,14,19,24,29,34]
+        j=[7,12,17,22,27,32,37]
+        t=13
+        for p,pp,ll in zip(a,b,range(99)):
+            t += 2
+            print(t)
+            for aa,bb,ii,jj in zip(p,pp,i,j):
+                sheet.cell(row=t, column=ii, value=aa)
+                sheet.cell(row=t, column=jj, value=bb)
+                if aa=='':
+                    pass
+                else:
+                    sheet.cell(row=t, column=ii+1, value='00')
+                
+                if bb =='':  
+                    pass
+                else:
+                    sheet.cell(row=t, column=jj+1, value='00')
+
+
+        # # csv保存-------------------        
+        # df.fillna(" ", inplace=True)
+
+        return wb
       
-
+        wb.save("保存先Excelファイルのパス")
     def get_week_calendar(self):
         calendar_context = super().get_week_calendar()
-        calendar_context['df'] = self.get_week_schedules(
+        calendar_context['wb'] = self.get_week_schedules(
             calendar_context['week_first'],
             calendar_context['week_last'],
             calendar_context['week_days']

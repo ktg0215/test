@@ -883,7 +883,6 @@ class CsvMixin(Week_CsvMixin):
         i=3
         for user,w in zip(users,range(40)):
             oo=i+w
-            print(user)
             sheet.cell(row=oo, column=99, value=user)
             sheet.cell(row=oo, column=109, value=user)
 
@@ -892,19 +891,23 @@ class CsvMixin(Week_CsvMixin):
         t=13
         for p,pp,ll in zip(a,b,range(99)):
             t += 2
-            print(t)
             for aa,bb,ii,jj in zip(p,pp,i,j):
-                sheet.cell(row=t, column=ii, value=aa)
-                sheet.cell(row=t, column=jj, value=bb)
                 if aa=='':
                     pass
                 else:
-                    sheet.cell(row=t, column=ii+1, value='00')
+                    sheet.cell(row=t, column=ii+1, value=00)
+                    aa=int(aa)
+                    sheet.cell(row=t, column=ii, value=aa)
                 
-                if bb =='':  
-                    pass
+                if bb =='': 
+                    pass 
                 else:
-                    sheet.cell(row=t, column=jj+1, value='00')
+                    bb=int(bb)
+                    sheet.cell(row=t, column=jj, value=bb)
+                    sheet.cell(row=t, column=jj+1, value=00)
+                
+                
+               
 
 
         # # csv保存-------------------        
